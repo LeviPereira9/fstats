@@ -13,10 +13,11 @@ services:
     ports:
       - "${MYSQL_PORT}:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -uroot -p${MYSQL_ROOT_PASSWORD} --silent" ]
+      interval: 10s
       timeout: 10s
-      retries: 1
+      retries: 5
+      start_period: 30s
 
   redis:
     image: redis:alpine
