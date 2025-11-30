@@ -1,10 +1,10 @@
-package lp.edu.fstats.integration.dto.matches;
+package lp.edu.fstats.integration.dto.matches.match;
 
 
 import lp.edu.fstats.model.team.Team;
 
 public record TeamExternalResponse(
-        Integer id,
+        Long id,
         String name,
         String shortName,
         String tla,
@@ -20,6 +20,16 @@ public record TeamExternalResponse(
         team.setCrest(crest);
 
         return team;
+    }
+
+    public Team update(Team target){
+
+        target.setName(name);
+        target.setShortName(shortName);
+        target.setTla(tla);
+        target.setCrest(crest);
+
+        return target;
     }
 
 }

@@ -1,4 +1,4 @@
-package lp.edu.fstats.integration.dto.matches;
+package lp.edu.fstats.integration.dto.matches.match;
 
 public record TimeExternalResponse(
         Integer home,
