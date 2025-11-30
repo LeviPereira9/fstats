@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface MatchRepository extends JpaRepository<Match, Long> {
 
-    List<Match> findAllByExternalIdIn(List<Integer> externalIds);
+    List<Match> findAllByExternalIdIn(List<Long> externalIds);
 
 }

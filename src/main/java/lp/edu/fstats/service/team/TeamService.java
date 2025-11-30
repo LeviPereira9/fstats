@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface TeamService {
-    Map<Integer, Team> findAllByExternalId(List<Integer> externalIds);
+    Map<Long, Team> findAllByExternalId(List<Long> externalIds);
 }

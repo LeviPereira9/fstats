@@ -2,6 +2,7 @@ package lp.edu.fstats.model.match;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.model.team.Team;
 
 import java.time.LocalDateTime;
@@ -14,10 +15,14 @@ public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_Partida")
-    private Integer id;
+    private Long id;
 
     @Column(name = "ID_ExternoPartida")
-    private Integer externalId;
+    private Long externalId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_Competicao")
+    private Competition competition;
 
     @Column(name = "Dt_Partida")
     private LocalDateTime utcDate;
@@ -46,5 +51,10 @@ public class Match {
     private Integer homeGoals = 0;
     @Column(name = "Qt_GolTimeVisitante")
     private Integer awayGoals = 0;
+
+    @Column(name = "St_Ativo")
+    private boolean active = true;
+
+
 
 }

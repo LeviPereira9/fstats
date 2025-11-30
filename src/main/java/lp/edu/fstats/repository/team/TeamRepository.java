@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    List<Team> findAllByExternalIdIn(List<Integer> externalIds);
+    List<Team> findAllByExternalIdIn(List<Long> externalIds);
 
 }

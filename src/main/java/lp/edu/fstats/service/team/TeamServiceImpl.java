@@ -16,7 +16,7 @@ public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
 
     @Override
-    public Map<Integer, Team> findAllByExternalId(List<Integer> externalIds) {
+    public Map<Long, Team> findAllByExternalId(List<Long> externalIds) {
         List<Team> teams = teamRepository.findAllByExternalIdIn(externalIds);
 
         return teams.stream().collect(

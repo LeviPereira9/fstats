@@ -6,5 +6,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface MatchService {
-    public Map<Integer, Match> findAllByExternalId(List<Integer> externalIds);
+    Map<Long, Match> findAllByExternalId(List<Long> externalIds);
 }

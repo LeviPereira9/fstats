@@ -17,7 +17,7 @@ public class MatchServiceImpl implements MatchService {
     private final MatchRepository matchRepository;
 
     @Override
-    public Map<Integer, Match> findAllByExternalId(List<Integer> externalIds) {
+    public Map<Long, Match> findAllByExternalId(List<Long> externalIds) {
         List<Match> matches = matchRepository.findAllByExternalIdIn(externalIds);
 
         return matches.stream().collect(
