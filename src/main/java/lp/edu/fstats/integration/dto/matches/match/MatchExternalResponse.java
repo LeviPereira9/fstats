@@ -1,4 +1,4 @@
-package lp.edu.fstats.integration.dto.matches;
+package lp.edu.fstats.integration.dto.matches.match;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lp.edu.fstats.model.match.Match;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public record MatchExternalResponse(
-        Integer id,
+        Long id,
         LocalDateTime utcDate,
         String status,
         @JsonProperty("matchday")
@@ -32,28 +32,24 @@ public record MatchExternalResponse(
     // Melhor coisa que eu posso fazer:
     // Mapzudo de <Id, Time>;
 
-    public Map<Integer, TeamExternalResponse> getTeams(){
-        Map<Integer, TeamExternalResponse> teams = new HashMap<>();
-        teams.put(homeTeam.id(), homeTeam);
-        teams.put(awayTeam.id(), awayTeam);
-
-        return teams;
-    }
-
-    public List<Integer> getTeamExternalIds(){
+    public List<Long> getTeamExternalIds(){
         return List.of(homeTeam.id(), awayTeam.id());
     }
 
-    public Integer getHomeTeamExternalId(){
+    public Long getHomeTeamExternalId(){
         return homeTeam.id();
     }
 
-    public Integer getAwayTeamExternalId(){
+    public Long getAwayTeamExternalId(){
         return awayTeam.id();
     }
 
-    public Integer getScoreExternalId(){
-        return id();
+    public Team homeTeamToModel(){
+        return homeTeam.toModel();
+    }
+
+    public Team awayTeamToModel(){
+        return awayTeam.toModel();
     }
 
     public Match toModel(){
@@ -71,12 +67,17 @@ public record MatchExternalResponse(
         return match;
     }
 
-    public Team homeTeamToModel(){
-        return homeTeam.toModel();
-    }
+    public Match update(Match target){
 
-    public Team awayTeamToModel(){
-        return awayTeam.toModel();
+        target.setUtcDate(utcDate);
+        target.setStatus(status);
+        target.setMatchDay(matchDay);
+        target.setStage(stage);
+        target.setWinner(score.winner());
+        target.setHomeGoals(score.fullTime().home());
+        target.setAwayGoals(score.fullTime().away());
+
+        return target;
     }
 
 

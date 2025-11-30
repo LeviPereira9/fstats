@@ -13,7 +13,7 @@ public class Team {
     private Long id;
 
     @Column(name = "ID_ExternoTime")
-    private Integer externalId;
+    private Long externalId;
 
     @Column(name = "Nm_Time")
     private String name;
@@ -26,4 +26,7 @@ public class Team {
 
     @Column(name = "Ur_Emblema")
     private String crest;
+
+    @Column(name = "St_Ativo")
+    private boolean active = true;
 }
