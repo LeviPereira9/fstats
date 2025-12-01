@@ -11,13 +11,13 @@ public class FootballApiClient {
 
     private final RestClient restClient;
 
-    public MatchesExternalResponse getCurrentMatches(){
+    public MatchesExternalResponse getCurrentMatches(String season, Integer matchday){
         return restClient.get()
                 .uri(uriBuilder ->
                         uriBuilder
                                 .path("/competitions/PL/matches")
-                                .queryParam("season", "2025")
-                                .queryParam("matchday", 1)
+                                .queryParam("season", season)
+                                .queryParam("matchday", matchday)
                                 .build())
                 .retrieve()
                 .body(MatchesExternalResponse.class);

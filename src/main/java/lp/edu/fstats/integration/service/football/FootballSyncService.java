@@ -15,6 +15,7 @@ import lp.edu.fstats.service.match.MatchService;
 import lp.edu.fstats.service.team.TeamService;
 import org.springframework.stereotype.Service;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class FootballSyncService {
 
+    private final String STATUS = "Em andamento";
     private final FootballApiClient footballApiClient;
     private final MatchService matchService;
     private final TeamService teamService;
@@ -30,17 +32,32 @@ public class FootballSyncService {
     private final MatchRepository matchRepository;
     private final CompetitionRepository competitionRepository;
 
-
     public void Manage(){
-        MatchesExternalResponse externalMatches = footballApiClient.getCurrentMatches();
 
-        Long externalCompetitionId = externalMatches.getCompetitionExternalId();
+        Competition competition = competitionRepository.findByCodeAndStatus("PL", STATUS)
+                .orElse(null);
 
-        Competition competition = competitionRepository.findByExternalId(externalCompetitionId)
-                .orElse(externalMatches.competitionToModel());
+        String SEASON;
+        Integer MATCHDAY;
 
-        if(competition.getId() == null){
-            competition = competitionRepository.save(competition);
+        if(competition == null){
+            SEASON = Year.now().toString();
+            MATCHDAY = 1;
+        } else {
+            SEASON = "" + competition.getStartDate().getYear();
+            MATCHDAY = competition.getCurrentMatchDay();
+        }
+
+        MatchesExternalResponse externalMatches = footballApiClient.getCurrentMatches(SEASON, MATCHDAY);
+
+        if(competition == null){
+            competition = externalMatches.competitionToModel();
+        }
+
+        boolean matchDayFinished = externalMatches.allMatchesFinished();
+
+        if(matchDayFinished){
+            competition.incrementMatchDay();
         }
 
         List<Long> externalTeamsIds = externalMatches.getTeamsExternalIds();
@@ -88,6 +105,7 @@ public class FootballSyncService {
             matchesToSave.add(currentMatch);
         }
 
+        competitionRepository.save(competition);
         teamRepository.saveAll(teamsToSave);
         matchRepository.saveAll(matchesToSave);
     }
