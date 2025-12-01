@@ -10,4 +10,6 @@ public interface CompetitionRepository extends JpaRepository<Competition, Long> 
     Optional<Competition> findByExternalId(Long externalId);
 
     Optional<Competition> findByCode(String code);
+
+    Optional<Competition> findByCodeAndStatus(String number, String status);
 }

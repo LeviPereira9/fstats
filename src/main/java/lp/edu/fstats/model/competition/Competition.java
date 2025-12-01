@@ -35,4 +35,15 @@ public class Competition {
 
     @Column(name = "St_Ativo")
     private boolean active = true;
+
+    @Column(name = "Nr_AtualRodada")
+    private Integer currentMatchDay = 1;
+
+    @Column(name = "St_Competicao")
+    private String status = "Em andamento";
+
+
+    public void incrementMatchDay() {
+        currentMatchDay += 1;
+    }
 }
