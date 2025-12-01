@@ -1,6 +1,9 @@
 package lp.edu.fstats.service.match;
 
 import lombok.RequiredArgsConstructor;
+import lp.edu.fstats.dto.match.MatchResponse;
+import lp.edu.fstats.dto.match.MatchesResponse;
+import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.model.match.Match;
 import lp.edu.fstats.repository.match.MatchRepository;
 import org.springframework.stereotype.Service;
@@ -22,5 +25,18 @@ public class MatchServiceImpl implements MatchService {
 
         return matches.stream().collect(
                 Collectors.toMap(Match::getExternalId, Function.identity()));
+    }
+
+    @Override
+    public MatchesResponse getMatches(String code, Integer matchDay) {
+        List<Match> matches = matchRepository.findAllByCompetitionAndMatchday(code, matchDay);
+
+        if(matches.isEmpty()){
+            throw CustomNotFoundException.match();
+        }
+
+        List<MatchResponse> matchesResponse = matches.stream().map(MatchResponse::new).toList();
+
+        return new MatchesResponse(matchesResponse);
     }
 }

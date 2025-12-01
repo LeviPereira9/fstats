@@ -2,8 +2,10 @@ package lp.edu.fstats.controller.competition;
 
 import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.dto.competition.CompetitionResponse;
+import lp.edu.fstats.dto.match.MatchesResponse;
 import lp.edu.fstats.response.normal.Response;
 import lp.edu.fstats.service.competition.CompetitionService;
+import lp.edu.fstats.service.match.MatchService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CompetitionController {
     private final CompetitionService competitionService;
+    private final MatchService matchService;
 
     @GetMapping("/{code}")
     public ResponseEntity<Response<CompetitionResponse>> getCompetition(
@@ -26,6 +29,23 @@ public class CompetitionController {
                 .code(HttpStatus.OK.value())
                 .data(data)
                 .message("Competição encontrada com sucesso.")
+                .build();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{code}/matches")
+    public ResponseEntity<Response<MatchesResponse>> getMatches(
+            @PathVariable String code,
+            @RequestParam(defaultValue = "1") Integer matchday
+    ){
+        MatchesResponse data = matchService.getMatches(code, matchday);
+
+        Response<MatchesResponse> response = Response.<MatchesResponse>builder()
+                .operation("Competition.Matches.GetMatches")
+                .code(HttpStatus.OK.value())
+                .data(data)
+                .message("Partidas encontradas com sucesso.")
                 .build();
 
         return ResponseEntity.ok(response);
