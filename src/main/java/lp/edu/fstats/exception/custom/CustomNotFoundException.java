@@ -24,4 +24,8 @@ public class CustomNotFoundException extends RuntimeException {
     public static CustomNotFoundException verificationTokenPassword() {
         return new CustomNotFoundException("Token de redefinição de senha não encontrado. Solicite um novo envio.");
     }
+
+    public static CustomNotFoundException competition(){
+        return new CustomNotFoundException("Competição não encontrada. Solicite um novo envio.");
+    }
 }
