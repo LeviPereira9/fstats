@@ -11,9 +11,9 @@ public class FstatsApplication {
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(FstatsApplication.class, args);
 
-        FootballSyncService syncService = context.getBean(FootballSyncService.class);
+        //FootballSyncService syncService = context.getBean(FootballSyncService.class);
 
-        syncService.Manage();
+        //syncService.Manage();
 
     }
 
