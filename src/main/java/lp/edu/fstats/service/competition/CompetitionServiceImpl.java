@@ -1,6 +1,8 @@
 package lp.edu.fstats.service.competition;
 
 import lombok.RequiredArgsConstructor;
+import lp.edu.fstats.dto.competition.CompetitionResponse;
+import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.repository.competition.CompetitionRepository;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,10 @@ public class CompetitionServiceImpl implements CompetitionService {
     private final CompetitionRepository competitionRepository;
 
     @Override
-    public Competition findByExternalId(Long externalId) {
-        return null;
+    public CompetitionResponse getCompetition(String code) {
+        Competition competition = competitionRepository.findByCode(code)
+                .orElseThrow(CustomNotFoundException::competition);
+
+        return new CompetitionResponse(competition);
     }
 }
