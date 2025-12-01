@@ -28,4 +28,8 @@ public class CustomNotFoundException extends RuntimeException {
     public static CustomNotFoundException competition(){
         return new CustomNotFoundException("Competição não encontrada. Solicite um novo envio.");
     }
+
+    public static CustomNotFoundException match(){
+        return new CustomNotFoundException("Nenhuma partida foi encontrada. Solicite um novo envio.");
+    }
 }
