@@ -48,4 +48,8 @@ public record MatchesExternalResponse (
         return competitionModel;
     }
 
+    public boolean allMatchesFinished(){
+        return matches.stream().allMatch(m -> m.status().equals("FINISHED"));
+    }
+
 }
