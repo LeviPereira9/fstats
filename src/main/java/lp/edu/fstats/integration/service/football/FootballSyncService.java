@@ -1,7 +1,9 @@
 package lp.edu.fstats.integration.service.football;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.integration.client.FootballApiClient;
+import lp.edu.fstats.integration.dto.competition.CompetitionExternalResponse;
 import lp.edu.fstats.integration.dto.matches.match.MatchExternalResponse;
 import lp.edu.fstats.integration.dto.matches.MatchesExternalResponse;
 import lp.edu.fstats.integration.dto.matches.match.TeamExternalResponse;
@@ -25,6 +27,7 @@ import java.util.Map;
 public class FootballSyncService {
 
     private final String STATUS = "Em andamento";
+    private final Integer MAX_REQUESTS = 10;
     private final FootballApiClient footballApiClient;
     private final MatchService matchService;
     private final TeamService teamService;
@@ -32,31 +35,41 @@ public class FootballSyncService {
     private final MatchRepository matchRepository;
     private final CompetitionRepository competitionRepository;
 
-    public void Manage(){
-
-        Competition competition = competitionRepository.findByCodeAndStatus("PL", STATUS)
-                .orElse(null);
-
-        String SEASON;
+    @Transactional
+    public void manageCompetitionMatches(String code, int requests, Competition competition){
+        String SEASON = Year.now().toString();
         Integer MATCHDAY;
 
-        if(competition == null){
-            SEASON = Year.now().toString();
-            MATCHDAY = 1;
-        } else {
-            SEASON = "" + competition.getStartDate().getYear();
-            MATCHDAY = competition.getCurrentMatchDay();
+        if(requests > MAX_REQUESTS){
+            return;// Em tese é pra esperar 1 minuto.
         }
 
-        MatchesExternalResponse externalMatches = footballApiClient.getCurrentMatches(SEASON, MATCHDAY);
-
         if(competition == null){
-            competition = externalMatches.competitionToModel();
+
+            competition = competitionRepository.findByCodeAndStatus(code, STATUS)
+                    .orElse(null);
+
+            if(competition == null){
+
+                CompetitionExternalResponse externalCompetition = footballApiClient.getCurrentCompetition(code);
+
+                competition = externalCompetition.toModel();
+
+                requests++;
+
+            }
         }
+
+        MATCHDAY = competition.getCurrentMatchDay();
+
+        MatchesExternalResponse externalMatches = footballApiClient
+                .getCurrentMatches(code, SEASON, MATCHDAY);
+
+        requests++;
 
         boolean matchDayFinished = externalMatches.allMatchesFinished();
 
-        if(matchDayFinished){
+        if(matchDayFinished && requests < MAX_REQUESTS){
             competition.incrementMatchDay();
         }
 
@@ -64,10 +77,6 @@ public class FootballSyncService {
 
         List<Long> externalMatchIds = externalMatches.getMatchesExternalIds();
 
-        // Oq vai acontecer?
-        // Verificamos se os times/partidas/pontuações existem.
-        // Se existe, a gente pega pra atualizar
-        // Se não existe, vai ser criado.
         Map<Long, Team> mapTeams = teamService.findAllByExternalId(externalTeamsIds);
         Map<Long, Match> mapMatches = matchService.findAllByExternalId(externalMatchIds);
 
@@ -105,9 +114,14 @@ public class FootballSyncService {
             matchesToSave.add(currentMatch);
         }
 
-        competitionRepository.save(competition);
+        competition = competitionRepository.save(competition);
         teamRepository.saveAll(teamsToSave);
         matchRepository.saveAll(matchesToSave);
+
+        if(!competition.isCurrentMatchDayInSync()){
+            manageCompetitionMatches(code, requests, competition);
+        }
+
     }
 
     private Team getTeam(Team currentTeam, TeamExternalResponse externalTeam) {
