@@ -36,8 +36,11 @@ public class Competition {
     @Column(name = "St_Ativo")
     private boolean active = true;
 
-    @Column(name = "Nr_AtualRodada")
+    @Column(name = "Nr_RodadaAtual")
     private Integer currentMatchDay = 1;
+
+    @Column(name = "Nr_ExternoRodadaAtual")
+    private Integer externalCurrentMatchDay = 1;
 
     @Column(name = "St_Competicao")
     private String status = "Em andamento";
@@ -45,5 +48,9 @@ public class Competition {
 
     public void incrementMatchDay() {
         currentMatchDay += 1;
+    }
+
+    public boolean isCurrentMatchDayInSync() {
+        return currentMatchDay.equals(externalCurrentMatchDay);
     }
 }
