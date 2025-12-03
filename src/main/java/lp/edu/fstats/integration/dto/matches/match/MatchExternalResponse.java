@@ -18,7 +18,8 @@ public record MatchExternalResponse(
         String stage,
         TeamExternalResponse homeTeam,
         TeamExternalResponse awayTeam,
-        ScoreExternalResponse score
+        ScoreExternalResponse score,
+        SeasonExternalResponse season
 ) {
 
     //Oq eu quero? Passar os external ID e verificar se já existem.
@@ -56,19 +57,20 @@ public record MatchExternalResponse(
         Match match = new Match();
 
         match.setExternalId(id);
-        match.setUtcDate(utcDate);
-        match.setStatus(status);
-        match.setMatchDay(matchDay);
-        match.setStage(stage);
-        match.setWinner(score.winner());
-        match.setHomeGoals(score.fullTime().home());
-        match.setAwayGoals(score.fullTime().away());
+
+        this.map(match);
 
         return match;
     }
 
     public Match update(Match target){
 
+        this.map(target);
+
+        return target;
+    }
+
+    private void map(Match target){
         target.setUtcDate(utcDate);
         target.setStatus(status);
         target.setMatchDay(matchDay);
@@ -76,8 +78,6 @@ public record MatchExternalResponse(
         target.setWinner(score.winner());
         target.setHomeGoals(score.fullTime().home());
         target.setAwayGoals(score.fullTime().away());
-
-        return target;
     }
 
 
