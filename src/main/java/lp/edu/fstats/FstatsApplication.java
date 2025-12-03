@@ -13,7 +13,8 @@ public class FstatsApplication {
 
         FootballSyncService syncService = context.getBean(FootballSyncService.class);
 
-        syncService.Manage();
+        //syncService.Manage(1);
+        syncService.manageCompetitionMatches("ELC", 1, null);
 
     }
 
