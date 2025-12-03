@@ -11,6 +11,7 @@ public record CompetitionResponse(
         String code,
         String type,
         String emblem,
+        Integer currentMatchDay,
         Integer count,
         LocalDate startDate,
         LocalDate endDate
@@ -23,6 +24,7 @@ public record CompetitionResponse(
                 competition.getCode(),
                 competition.getType(),
                 competition.getEmblem(),
+                competition.getCurrentMatchDay(),
                 competition.getCount(),
                 competition.getStartDate(),
                 competition.getEndDate()
