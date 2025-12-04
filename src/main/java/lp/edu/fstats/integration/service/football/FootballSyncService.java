@@ -40,6 +40,10 @@ public class FootballSyncService {
         String SEASON = Year.now().toString();
         Integer MATCHDAY;
 
+        // TODO: Sempre vamos fazer uma request para o Competition.
+        // TODO: Atualizar competition.
+        // TODO: Finalizar uma competition.
+        // TODO: Parar de salvar tudo a cada request
         if(requests > MAX_REQUESTS){
             return;// Em tese é pra esperar 1 minuto.
         }
