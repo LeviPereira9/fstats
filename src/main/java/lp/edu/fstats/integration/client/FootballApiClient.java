@@ -3,8 +3,11 @@ package lp.edu.fstats.integration.client;
 import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.integration.dto.competition.CompetitionExternalResponse;
 import lp.edu.fstats.integration.dto.matches.MatchesExternalResponse;
+import lp.edu.fstats.integration.dto.standings.StandingsExternalResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+
+import java.time.Year;
 
 @Component
 @RequiredArgsConstructor
@@ -12,7 +15,7 @@ public class FootballApiClient {
 
     private final RestClient restClient;
 
-    public MatchesExternalResponse getCurrentMatches(String code, String season, Integer matchday){
+    public MatchesExternalResponse getCurrentMatches(String code, Year season, Integer matchday){
         return restClient.get()
                 .uri(uriBuilder ->
                         uriBuilder
@@ -34,4 +37,14 @@ public class FootballApiClient {
                 .body(CompetitionExternalResponse.class);
     }
 
+    public StandingsExternalResponse getCurrentTotalStandings(String code, Year season){
+        return restClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/competitions/"+code+"/standings")
+                                .queryParam("season", season)
+                                .build())
+                .retrieve()
+                .body(StandingsExternalResponse.class);
+    }
 }
