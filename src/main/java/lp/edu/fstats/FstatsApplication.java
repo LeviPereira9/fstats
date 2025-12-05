@@ -14,8 +14,8 @@ public class FstatsApplication {
         FootballSyncService syncService = context.getBean(FootballSyncService.class);
 
         //syncService.Manage(1);
-        syncService.manageCompetitionMatches("ELC", 1, null);
-
+        //syncService.manageCompetitionMatches("ELC", 1, null);
+        syncService.manageStandings("PL", 1);
     }
 
 }
