@@ -32,4 +32,8 @@ public class CustomNotFoundException extends RuntimeException {
     public static CustomNotFoundException match(){
         return new CustomNotFoundException("Nenhuma partida foi encontrada. Solicite um novo envio.");
     }
+
+    public static CustomNotFoundException standings() {
+        return new CustomNotFoundException("Classificação não encontrada. Solicite um novo envio.");
+    }
 }
