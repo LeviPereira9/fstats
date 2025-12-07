@@ -28,8 +28,8 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public MatchesResponse getMatches(String code, Integer matchDay) {
-        List<Match> matches = matchRepository.findAllByCompetitionAndMatchday(code, matchDay);
+    public MatchesResponse getMatches(Long competitionId, Integer matchDay) {
+        List<Match> matches = matchRepository.findAllByCompetition_IdAndMatchDay(competitionId, matchDay);
 
         if(matches.isEmpty()){
             throw CustomNotFoundException.match();

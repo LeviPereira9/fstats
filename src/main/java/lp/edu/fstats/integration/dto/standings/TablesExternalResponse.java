@@ -1,6 +1,8 @@
 package lp.edu.fstats.integration.dto.standings;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record TablesExternalResponse(
@@ -11,4 +13,13 @@ public record TablesExternalResponse(
     public List<Long> getTeamExternalIds(){
         return table.stream().map(TableExternalResponse::getTeamExternalId).collect(Collectors.toList());
     }
+
+    public Map<Long, TableExternalResponse> mapScoresByTeam(){
+        return table.stream().collect(Collectors.toMap(
+                TableExternalResponse::getTeamExternalId,
+                Function.identity()
+        ));
+    }
+
+
 }

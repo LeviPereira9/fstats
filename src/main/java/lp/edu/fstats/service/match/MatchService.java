@@ -9,5 +9,5 @@ import java.util.Map;
 public interface MatchService {
     Map<Long, Match> findAllByExternalId(List<Long> externalIds);
 
-    MatchesResponse getMatches(String code, Integer matchday);
+    MatchesResponse getMatches(Long competitionId, Integer matchday);
 }

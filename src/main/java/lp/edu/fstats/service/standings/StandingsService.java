@@ -9,5 +9,5 @@ import java.util.Map;
 public interface StandingsService {
     Map<Long, Standings> findAllByCompetitionId(Long id);
 
-    StandingsResponse getStandings(String code, Long competitionId);
+    StandingsResponse getStandings(Long competitionId);
 }

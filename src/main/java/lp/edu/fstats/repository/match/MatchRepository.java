@@ -11,10 +11,12 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
 
     List<Match> findAllByExternalIdIn(List<Long> externalIds);
 
-    @Query("""
-    SELECT m FROM Match m WHERE m.competition.code = :code AND m.matchDay = :matchDay
+    /*@Query("""
+    SELECT m FROM Match m WHERE m.competition.id = :competitionId AND m.matchDay = :matchDay
 """)
-    List<Match> findAllByCompetitionAndMatchday(@Param("code") String code,@Param("matchDay") Integer matchDay);
+    List<Match> findAllByCompetitionAndMatchday(@Param("competitionId") Long competitionId,@Param("matchDay") Integer matchDay);*/
+
+    List<Match> findAllByCompetition_IdAndMatchDay(Long competitionId, Integer matchDay);
 
     List<Match> findAllByCompetition_Id(Long competitionId);
 

@@ -10,5 +10,4 @@ public interface StandingsRepository extends JpaRepository<Standings, Long> {
 
     List<Standings> findAllByCompetition_Id(Long id);
 
-    List<Standings> findAllByCompetition_CodeAndCompetition_Id(String code, Long id);
 }

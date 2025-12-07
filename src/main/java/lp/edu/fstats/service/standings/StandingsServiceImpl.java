@@ -26,8 +26,8 @@ public class StandingsServiceImpl implements StandingsService {
     }
 
     @Override
-    public StandingsResponse getStandings(String code, Long competitionId) {
-        List<Standings> standings = standingsRepository.findAllByCompetition_CodeAndCompetition_Id(code, competitionId);
+    public StandingsResponse getStandings(Long competitionId) {
+        List<Standings> standings = standingsRepository.findAllByCompetition_Id(competitionId);
 
         if(standings.isEmpty()){
             throw CustomNotFoundException.standings();

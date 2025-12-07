@@ -40,7 +40,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
         Competition competition;
 
         if(recursiveCompetition == null){
-            competition = competitionRepository.findById(14L)
+            competition = competitionRepository.findById(34L)
                     .orElse(null);
         } else {
             competition = recursiveCompetition;
