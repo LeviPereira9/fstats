@@ -3,6 +3,7 @@ package lp.edu.fstats.model.match;
 import jakarta.persistence.*;
 import lombok.Data;
 import lp.edu.fstats.model.competition.Competition;
+import lp.edu.fstats.model.probability.Probability;
 import lp.edu.fstats.model.team.Team;
 
 import java.time.LocalDateTime;
@@ -55,6 +56,8 @@ public class Match {
     @Column(name = "St_Ativo")
     private boolean active = true;
 
+    @OneToOne(mappedBy = "match", fetch = FetchType.EAGER)
+    private Probability probability;
 
 
 }
