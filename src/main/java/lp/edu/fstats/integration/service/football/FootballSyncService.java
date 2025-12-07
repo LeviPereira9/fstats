@@ -19,6 +19,7 @@ import lp.edu.fstats.repository.match.MatchRepository;
 import lp.edu.fstats.repository.standings.StandingsRepository;
 import lp.edu.fstats.repository.team.TeamRepository;
 import lp.edu.fstats.service.match.MatchService;
+import lp.edu.fstats.service.probability.ProbabilityServiceImpl;
 import lp.edu.fstats.service.standings.StandingsService;
 import lp.edu.fstats.service.team.TeamService;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class FootballSyncService {
     private final String STATUS = "Em andamento";
     private final Integer MAX_REQUESTS = 10;
     private final Year SEASON = Year.now();
+
     private final FootballApiClient footballApiClient;
     private final MatchService matchService;
     private final TeamService teamService;
@@ -43,46 +45,68 @@ public class FootballSyncService {
     private final CompetitionRepository competitionRepository;
     private final StandingsRepository standingsRepository;
     private final StandingsService standingsService;
+    private final ProbabilityServiceImpl probabilityServiceImpl;
 
     @Transactional
-    public void manageCompetitionMatches(String code, int requests, Competition competition){
-        Integer MATCHDAY;
+    public void manageCompetitionMatches(String code, int requests, Competition recursiveCompetition){
 
-        // TODO: Sempre vamos fazer uma request para o Competition.
-        // TODO: Atualizar competition.
+        boolean firstCall = recursiveCompetition == null;
+        Integer MATCHDAY;
+        Competition competition;
+
         // TODO: Finalizar uma competition.
-        // TODO: Parar de salvar tudo a cada request
+
         if(requests > MAX_REQUESTS){
             return;// Em tese é pra esperar 1 minuto.
         }
 
-        if(competition == null){
+        // Ta, oq tem que acontecer.
+        // Se for recursivo, ele vai pular pq ja foi feito a coisinha
+        // Se não for, temos que buscar no banco de dados e fazer uma requisição para atualizar.
+        // Se não tiver no bd, a req cria se tiver atualiza.
+        if(recursiveCompetition == null){
 
-            competition = competitionRepository.findByCodeAndStatus(code, STATUS)
+            Competition savedCompetition = competitionRepository.findByCodeAndStatus(code, STATUS)
                     .orElse(null);
 
-            if(competition == null){
+            CompetitionExternalResponse externalCompetition = footballApiClient.getCurrentCompetition(code);
 
-                CompetitionExternalResponse externalCompetition = footballApiClient.getCurrentCompetition(code);
+            competition = savedCompetition == null ? externalCompetition.toModel() : externalCompetition.update(savedCompetition);
 
-                competition = externalCompetition.toModel();
+            requests++;
 
-                requests++;
-
-            }
+        } else {
+            competition = recursiveCompetition;
         }
 
-        MATCHDAY = competition.getCurrentMatchDay();
+        //Oq queremos realmente aqui?
+        // MatchDay deve começar da ultima rodada que foi finalizada, pq ai ela pode atualizar e vida que segue.
+        // Mas também queremos ter algumas partidas que nem começaram ainda já registradas.
+        // Então estamos em um dilema.
+        // Pois tem que ser:
+        // Se estiver com as 3 no futuro então > LastFinished.
+        // Se não > currentMatchDay
+
+        if(firstCall){
+            MATCHDAY = competition.getLastFinishedMatchDay() + 1;
+        } else {
+            MATCHDAY = competition.getCurrentMatchDay();
+        }
 
         MatchesExternalResponse externalMatches = footballApiClient
                 .getCurrentMatches(code, SEASON, MATCHDAY);
 
         requests++;
 
+        if(externalMatches.matches().isEmpty()){
+            // TODO: Adicionar mais um DTO para pegar a SEASON das matches, se tiver WINNER significa que já acabou.
+            return; // Não têm mais matchs
+        }
+
         boolean matchDayFinished = externalMatches.allMatchesFinished();
 
-        if(matchDayFinished && requests < MAX_REQUESTS){
-            competition.incrementMatchDay();
+        if(matchDayFinished){
+            competition.incrementLastFinishedMatchDay();
         }
 
         List<Long> externalTeamsIds = externalMatches.getTeamsExternalIds();
@@ -98,6 +122,7 @@ public class FootballSyncService {
         List<Match> matchesToSave = new ArrayList<>();
 
         for(MatchExternalResponse match : matches){
+
             Match currentMatch = this.getMatch(
                     mapMatches.get(match.id()),
                     match);
@@ -130,7 +155,12 @@ public class FootballSyncService {
         teamRepository.saveAll(teamsToSave);
         matchRepository.saveAll(matchesToSave);
 
-        if(!competition.isCurrentMatchDayInSync()){
+        // Vamos lá, também quero salvar algumas rodadas a frente sabe? que vai acontecer.
+        // Então ExternalCurrentMatchDay + 2, quero sempre estar +2 rodadas já salvas, sabe?
+
+
+        if (MATCHDAY < competition.getExternalCurrentMatchDay() + 2 && requests <= MAX_REQUESTS) {
+            competition.incrementMatchDay();
             manageCompetitionMatches(code, requests, competition);
         }
 
@@ -139,7 +169,7 @@ public class FootballSyncService {
     private Team getTeam(Team currentTeam, TeamExternalResponse externalTeam) {
         if(currentTeam == null) return externalTeam.toModel();
 
-        return externalTeam.update(currentTeam);
+        return currentTeam;
     }
 
     private Match getMatch(Match currentMatch, MatchExternalResponse externalMatch) {
@@ -194,6 +224,10 @@ public class FootballSyncService {
         }
 
         standingsRepository.saveAll(standingsToSave);
+    }
+
+    public void fuckingManageProbability(){
+        probabilityServiceImpl.manageProbability(null, null, null);
     }
 
 }
