@@ -45,14 +45,6 @@ public record MatchExternalResponse(
         return awayTeam.id();
     }
 
-    public Team homeTeamToModel(){
-        return homeTeam.toModel();
-    }
-
-    public Team awayTeamToModel(){
-        return awayTeam.toModel();
-    }
-
     public Match toModel(){
         Match match = new Match();
 
