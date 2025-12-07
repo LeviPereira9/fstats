@@ -16,6 +16,8 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
 """)
     List<Match> findAllByCompetitionAndMatchday(@Param("code") String code,@Param("matchDay") Integer matchDay);
 
+    List<Match> findAllByCompetition_Id(Long competitionId);
+
     @Query("""
     SELECT
             CASE
