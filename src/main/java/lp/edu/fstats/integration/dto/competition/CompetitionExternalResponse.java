@@ -25,4 +25,12 @@ public record CompetitionExternalResponse(
 
         return competition;
     }
+
+    public Competition update(Competition target) {
+        target.setStartDate(currentSeason.startDate());
+        target.setEndDate(currentSeason.endDate());
+        target.setExternalCurrentMatchDay(currentSeason.currentMatchDay());
+
+        return target;
+    }
 }
