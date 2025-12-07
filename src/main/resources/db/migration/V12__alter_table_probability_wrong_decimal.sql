@@ -1,0 +1,3 @@
+ALTER TABLE TB_Probabilidade MODIFY COLUMN Vl_Probabilidade_5 DECIMAL(7,4) NOT NULL;
+ALTER TABLE TB_Probabilidade MODIFY COLUMN Vl_Probabilidade_15 DECIMAL(7,4) NOT NULL;
+ALTER TABLE TB_Probabilidade MODIFY COLUMN Vl_Probabilidade_25 DECIMAL(7,4) NOT NULL;

@@ -1,0 +1,1 @@
+ALTER TABLE TB_Competicao ADD COLUMN Nr_UltimaRodadaFinalizada INTEGER NOT NULL DEFAULT 0;
