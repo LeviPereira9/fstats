@@ -10,20 +10,25 @@ import lp.edu.fstats.integration.dto.matches.match.TeamExternalResponse;
 import lp.edu.fstats.integration.dto.standings.StandingsExternalResponse;
 import lp.edu.fstats.integration.dto.standings.TableExternalResponse;
 import lp.edu.fstats.integration.dto.standings.TablesExternalResponse;
+import lp.edu.fstats.model.avarages.Averages;
 import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.model.match.Match;
 import lp.edu.fstats.model.standings.Standings;
 import lp.edu.fstats.model.team.Team;
+import lp.edu.fstats.repository.averages.AveragesRepository;
 import lp.edu.fstats.repository.competition.CompetitionRepository;
 import lp.edu.fstats.repository.match.MatchRepository;
 import lp.edu.fstats.repository.standings.StandingsRepository;
 import lp.edu.fstats.repository.team.TeamRepository;
+import lp.edu.fstats.service.averages.AveragesService;
 import lp.edu.fstats.service.match.MatchService;
 import lp.edu.fstats.service.probability.ProbabilityServiceImpl;
 import lp.edu.fstats.service.standings.StandingsService;
 import lp.edu.fstats.service.team.TeamService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +51,8 @@ public class FootballSyncService {
     private final StandingsRepository standingsRepository;
     private final StandingsService standingsService;
     private final ProbabilityServiceImpl probabilityServiceImpl;
+    private final AveragesService averagesService;
+    private final AveragesRepository averagesRepository;
 
     @Transactional
     public void manageCompetitionMatches(String code, int requests, Competition recursiveCompetition){
@@ -197,19 +204,25 @@ public class FootballSyncService {
 
         Map<Long, Standings> currentStandingsMappedByTeamId = standingsService.findAllByCompetitionId(competition.getId());
 
-        TablesExternalResponse externalTables = externalStandings.getFullTable();
+        Map<String, TablesExternalResponse> mapTables = externalStandings.getTables();
 
-        if(externalTables == null){
+        TablesExternalResponse fullTable = mapTables.get("TOTAL");
+
+
+
+        if(fullTable == null){
             return;
         }
 
-        List<Long> externalTeamsIds = externalTables.getTeamExternalIds();
+        List<Long> externalTeamsIds = fullTable.getTeamExternalIds();
 
         Map<Long, Team> mapTeams = teamService.findAllByExternalId(externalTeamsIds);
 
         List<Standings> standingsToSave = new ArrayList<>();
 
-        for(TableExternalResponse table: externalTables.table()){
+
+
+        for(TableExternalResponse table: fullTable.table()){
             boolean alreadyExists = currentStandingsMappedByTeamId.containsKey(table.getTeamExternalId());
             Standings standings;
 
@@ -223,8 +236,74 @@ public class FootballSyncService {
             standingsToSave.add(standings);
         }
 
+        Map<Long, Averages> currentAveragesMappedByTeamId = averagesService.findAllByCompetitionId(competition.getId());
+
+        List<Averages> averagesToSave = new ArrayList<>();
+
+        TablesExternalResponse homeTable = mapTables.get("HOME");
+        TablesExternalResponse awayTable = mapTables.get("AWAY");
+
+        Map<Long, TableExternalResponse> mapHomeTableByTeam = homeTable.mapScoresByTeam();
+        Map<Long, TableExternalResponse> mapAwayTableByTeam = awayTable.mapScoresByTeam();
+
+        for (Team team : mapTeams.values()) {
+
+            Long externalTeamId = team.getExternalId();
+
+            boolean hasHomeScore = mapHomeTableByTeam.containsKey(externalTeamId);
+            boolean hasAwayScore = mapAwayTableByTeam.containsKey(externalTeamId);
+
+            boolean teamAlreadyHasAverages = currentAveragesMappedByTeamId.containsKey(team.getId());
+
+            if (!hasHomeScore && !hasAwayScore) {
+                continue;
+            }
+
+            TableExternalResponse home = mapHomeTableByTeam.get(externalTeamId);
+            TableExternalResponse away = mapAwayTableByTeam.get(externalTeamId);
+
+            Averages averages = currentAveragesMappedByTeamId
+                    .getOrDefault(team.getId(), new Averages());
+
+            if(!teamAlreadyHasAverages){
+                averages.setTeam(team);
+                averages.setCompetition(competition);
+            }
+
+            if (home != null) {
+                averages.setAvgGoalsForHome(
+                        calculateAverage(home.goalsFor(), home.playedGames())
+                );
+
+                averages.setAvgGoalsAgainstHome(
+                        calculateAverage(home.goalsAgainst(), home.playedGames())
+                );
+            }
+
+            if (away != null) {
+                averages.setAvgGoalsForAway(
+                        calculateAverage(away.goalsFor(), away.playedGames())
+                );
+
+                averages.setAvgGoalsAgainstAway(
+                        calculateAverage(away.goalsAgainst(), away.playedGames())
+                );
+            }
+
+            averagesToSave.add(averages);
+        }
+
+        averagesRepository.saveAll(averagesToSave);
         standingsRepository.saveAll(standingsToSave);
     }
+
+    private BigDecimal calculateAverage(Integer goals, Integer games) {
+        if (games == null || games == 0) return BigDecimal.ZERO;
+
+        return BigDecimal.valueOf(goals)
+                .divide(BigDecimal.valueOf(games), 2, RoundingMode.HALF_UP);
+    }
+
 
     public void fuckingManageProbability(){
         probabilityServiceImpl.manageProbability(null, null, null);
