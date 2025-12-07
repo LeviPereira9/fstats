@@ -45,12 +45,23 @@ public class Competition {
     @Column(name = "St_Competicao")
     private String status = "Em andamento";
 
+    @Column(name = "Nr_UltimaRodadaFinalizada")
+    private Integer lastFinishedMatchDay = 0;
 
     public void incrementMatchDay() {
-        currentMatchDay += 1;
+        boolean alreadyHasFutureMatches = currentMatchDay.equals(externalCurrentMatchDay + 2);
+
+        if(!alreadyHasFutureMatches) currentMatchDay += 1;;
     }
 
-    public boolean isCurrentMatchDayInSync() {
-        return currentMatchDay.equals(externalCurrentMatchDay);
+    public void incrementLastFinishedMatchDay() {
+        boolean canIncrement = externalCurrentMatchDay.equals(lastFinishedMatchDay + 1);
+
+        if(!canIncrement) lastFinishedMatchDay+= 1;
+    }
+
+    public boolean isAheadByTwoMatchDays() {
+
+        return currentMatchDay.equals(externalCurrentMatchDay + 2);
     }
 }
