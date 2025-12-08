@@ -55,13 +55,21 @@ public class Competition {
     }
 
     public void incrementLastFinishedMatchDay() {
-        boolean canIncrement = externalCurrentMatchDay.equals(lastFinishedMatchDay + 1);
+        lastFinishedMatchDay += 1;
+    }
 
-        if(!canIncrement) lastFinishedMatchDay+= 1;
+    public void decrementMatchDay(){
+        boolean canDecrement = externalCurrentMatchDay.equals(currentMatchDay - 1);
+
+        if(canDecrement) currentMatchDay -= 1;
     }
 
     public boolean isAheadByTwoMatchDays() {
 
-        return currentMatchDay.equals(externalCurrentMatchDay + 2);
+        return currentMatchDay < externalCurrentMatchDay + 2;
+    }
+
+    public boolean isFinished() {
+        return currentMatchDay.equals(lastFinishedMatchDay) && externalCurrentMatchDay.equals(lastFinishedMatchDay);
     }
 }

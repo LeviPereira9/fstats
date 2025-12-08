@@ -89,5 +89,4 @@ public class CompetitionController {
         return ResponseEntity.ok(response);
     }
 
-
 }

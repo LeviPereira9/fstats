@@ -6,4 +6,6 @@ import lp.edu.fstats.model.competition.Competition;
 public interface CompetitionService {
 
     CompetitionResponse getCompetition(String code);
+
+    void saveCompetition(Competition competition);
 }

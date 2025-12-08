@@ -20,4 +20,9 @@ public class CompetitionServiceImpl implements CompetitionService {
 
         return new CompetitionResponse(competition);
     }
+
+    @Override
+    public void saveCompetition(Competition competition) {
+        competition = competitionRepository.save(competition);
+    }
 }
