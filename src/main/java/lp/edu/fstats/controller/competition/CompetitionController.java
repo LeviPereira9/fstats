@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/${api.prefix}/competition")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class CompetitionController {
     private final CompetitionService competitionService;
     private final MatchService matchService;
