@@ -75,7 +75,7 @@ public class AutoService {
     private final PoissonService poissonService;
     private final CodeRepository codeRepository;
 
-    @Scheduled(cron = "0 0 * * * *")
+    //@Scheduled(cron = "0 0 * * * *")
     @Transactional
     public void sync(){
         List<Code> codes = codeRepository.findAll();

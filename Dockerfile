@@ -9,12 +9,10 @@ COPY .mvn .mvn
 COPY pom.xml ./
 
 # Baixa dependências antes de copiar o código-fonte
-RUN ./mvnw dependency:go-offline -B
+
 
 # Copia o código-fonte e faz o build
 COPY src ./src
-RUN chmod +x mvnw
-RUN ./mvnw clean package -DskipTests
 
 # ====== STAGE 2: Runtime======
 FROM eclipse-temurin:17-jre-alpine

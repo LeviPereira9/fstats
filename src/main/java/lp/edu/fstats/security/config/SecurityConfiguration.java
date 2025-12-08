@@ -22,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
+
     public static final String SECURITY = "bearerAuth";
     private final SecurityExceptionHandler securityExceptionHandler;
 

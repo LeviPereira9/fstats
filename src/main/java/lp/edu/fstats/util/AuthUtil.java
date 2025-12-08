@@ -8,7 +8,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class AuthUtil {
     public static final String[] PUBLIC_ENDPOINTS = {
             "/api/v1/auth/**",
-            "/api/v1/verify/**"
+            "/api/v1/verify/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui/**",
+            "/webjars/**",
+            "/swagger-ui.html",
+            "/api/v1/auth/**"
     };
 
     public static User getRequester(){
