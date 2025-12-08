@@ -18,4 +18,8 @@ public class CustomDuplicateFieldException extends RuntimeException {
     public static CustomDuplicateFieldException username() {
       return new CustomDuplicateFieldException("username", "Este nome de usuário já está sendo utilizado por outra conta.");
     }
+
+    public static CustomDuplicateFieldException code() {
+        return new CustomDuplicateFieldException("code", "Esse código já existe.");
+    }
 }

@@ -47,19 +47,14 @@ public record MatchesData(
             }
         }
 
-        homeTeamAvgScoredAtHome = BigDecimal.valueOf(homeTeamScoresAtHome)
-                .divide(BigDecimal.valueOf(homeTeamCount), 4, RoundingMode.HALF_UP);
+        homeTeamAvgScoredAtHome = this.safeDivide(BigDecimal.valueOf(homeTeamScoresAtHome), homeTeamCount);
+
+        homeTeamAvgConcernedAtHome = this.safeDivide(BigDecimal.valueOf(homeTeamConcernedAtHome), homeTeamCount);
 
 
-        homeTeamAvgConcernedAtHome = BigDecimal.valueOf(homeTeamConcernedAtHome)
-                .divide(BigDecimal.valueOf(homeTeamCount), 4, RoundingMode.HALF_UP);
+        awayTeamAvgScoredAtAway = this.safeDivide(BigDecimal.valueOf(awayTeamScoresAtAway), awayTeamCount);
 
-
-        awayTeamAvgScoredAtAway = BigDecimal.valueOf(awayTeamScoresAtAway)
-                .divide(BigDecimal.valueOf(awayTeamCount), 4, RoundingMode.HALF_UP);
-
-        awayTeamAvgConcernedAtAway = BigDecimal.valueOf(awayTeamConcernedAtAway)
-                .divide(BigDecimal.valueOf(awayTeamCount), 4, RoundingMode.HALF_UP);
+        awayTeamAvgConcernedAtAway = this.safeDivide(BigDecimal.valueOf(awayTeamConcernedAtAway), awayTeamCount);
 
         lambdaHomeTeam = (homeTeamAvgScoredAtHome.add(awayTeamAvgConcernedAtAway))
                 .divide(BigDecimal.valueOf(2), 4, RoundingMode.HALF_UP);
@@ -68,6 +63,12 @@ public record MatchesData(
                 .divide(BigDecimal.valueOf(2), 4, RoundingMode.HALF_UP);
 
         return lambdaHomeTeam.add(lambdaAwayTeam);
+    }
+
+    private BigDecimal safeDivide(BigDecimal value, int divisor){
+        if(divisor == 0) return BigDecimal.ZERO;
+
+        return value.divide(BigDecimal.valueOf(divisor), 4, RoundingMode.HALF_UP);
     }
 
     public static MatchesData toData(List<Match> matches){

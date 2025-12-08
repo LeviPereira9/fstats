@@ -73,7 +73,7 @@ public class FootballSyncService {
         // Se não tiver no bd, a req cria se tiver atualiza.
         if(recursiveCompetition == null){
 
-            Competition savedCompetition = competitionRepository.findByCodeAndStatus(code, STATUS)
+            Competition savedCompetition = competitionRepository.findByCodeAndStatus(code)
                     .orElse(null);
 
             CompetitionExternalResponse externalCompetition = footballApiClient.getCurrentCompetition(code);
@@ -191,7 +191,7 @@ public class FootballSyncService {
 
         //TODO: Verificar se realmente precisa atualizar
 
-        Competition competition = competitionRepository.findByCodeAndStatus(code, STATUS)
+        Competition competition = competitionRepository.findByCodeAndStatus(code)
                 .orElse(null);
 
         if(competition == null){

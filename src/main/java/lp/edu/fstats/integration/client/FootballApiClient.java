@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.integration.dto.competition.CompetitionExternalResponse;
 import lp.edu.fstats.integration.dto.matches.MatchesExternalResponse;
 import lp.edu.fstats.integration.dto.standings.StandingsExternalResponse;
+import lp.edu.fstats.integration.dto.teams.CompetitionTeamsExternalResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -46,5 +47,16 @@ public class FootballApiClient {
                                 .build())
                 .retrieve()
                 .body(StandingsExternalResponse.class);
+    }
+
+    public CompetitionTeamsExternalResponse getCurrentTeams(String code, Year season){
+        return restClient.get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .path("/competitions/"+ code +"/teams")
+                                .queryParam("season", season)
+                                .build())
+                .retrieve()
+                .body(CompetitionTeamsExternalResponse.class);
     }
 }

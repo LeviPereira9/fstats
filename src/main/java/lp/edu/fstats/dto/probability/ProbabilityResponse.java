@@ -12,9 +12,9 @@ public record ProbabilityResponse(
     public ProbabilityResponse(Probability source) {
 
         this(
-                source.getProbabilityOver05(),
-                source.getProbabilityOver15(),
-                source.getProbabilityOver25()
+                source.getProbabilityOver05().multiply(BigDecimal.valueOf(100)),
+                source.getProbabilityOver15().multiply(BigDecimal.valueOf(100)),
+                source.getProbabilityOver25().multiply(BigDecimal.valueOf(100))
         );
     }
 }

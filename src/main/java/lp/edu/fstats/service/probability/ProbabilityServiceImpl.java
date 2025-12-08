@@ -40,21 +40,23 @@ public class ProbabilityServiceImpl implements ProbabilityService {
         Competition competition;
 
         if(recursiveCompetition == null){
-            competition = competitionRepository.findById(34L)
+            competition = competitionRepository.findById(37L)
                     .orElse(null);
         } else {
             competition = recursiveCompetition;
         }
 
-        if(competition == null || competition.getCurrentMatchDay() < 4){
+        if(competition == null || competition.getCurrentMatchDay() < 3){
             return;
         }
 
-        Integer maxMatchDay = recursiveMaxMatchDay == null ? probabilityRepository.findMaxMatchday(competition.getId()) : recursiveMaxMatchDay;
+        Integer maxMatchDay = recursiveMaxMatchDay == null ?
+                probabilityRepository.findMaxMatchday(competition.getId()) :
+                recursiveMaxMatchDay;
 
         Integer startCount = maxMatchDay == null ? 3 : maxMatchDay + 1;
 
-        if(startCount > competition.getLastFinishedMatchDay()){
+        if(startCount > competition.getExternalCurrentMatchDay()){
             return;
         }
 
@@ -98,10 +100,10 @@ public class ProbabilityServiceImpl implements ProbabilityService {
             probabilitiesToSave.add(probability);
         }
 
-        if(startCount + 1 < competition.getCurrentMatchDay()){
+        if(startCount <= competition.getExternalCurrentMatchDay()){
             manageProbability(
                     competition,
-                    startCount + 1,
+                    startCount,
                     matches
             );
         }
