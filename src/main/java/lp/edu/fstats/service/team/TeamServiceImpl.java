@@ -22,4 +22,9 @@ public class TeamServiceImpl implements TeamService {
         return teams.stream().collect(
                 Collectors.toMap(Team::getExternalId, Function.identity()));
     }
+
+    @Override
+    public void saveTeams(List<Team> teams) {
+        teams = teamRepository.saveAll(teams);
+    }
 }

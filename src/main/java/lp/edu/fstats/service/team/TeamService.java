@@ -7,4 +7,6 @@ import java.util.Map;
 
 public interface TeamService {
     Map<Long, Team> findAllByExternalId(List<Long> externalIds);
+
+    void saveTeams(List<Team> teams);
 }
