@@ -14,10 +14,10 @@ public record AverageResponse(
     public AverageResponse(Averages source){
         this(
                 source.getTeam().getShortName(),
-                source.getAvgGoalsForHome(),
-                source.getAvgGoalsAgainstHome(),
-                source.getAvgGoalsForAway(),
-                source.getAvgGoalsForAway()
+                source.getAvgGoalsForHome().multiply(BigDecimal.valueOf(100)),
+                source.getAvgGoalsAgainstHome().multiply(BigDecimal.valueOf(100)),
+                source.getAvgGoalsForAway().multiply(BigDecimal.valueOf(100)),
+                source.getAvgGoalsForAway().multiply(BigDecimal.valueOf(100))
         );
     }
 }
