@@ -51,6 +51,7 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AuthUtil.PUBLIC_ENDPOINTS).permitAll()
+                        .requestMatchers("/api/v1/competition/code").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(handling -> handling
