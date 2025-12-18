@@ -23,9 +23,9 @@ public class VerificationController {
     private final VerificationService verificationService;
 
     @DocConfirmEmailChange
-    @PostMapping("/email")
+    @PostMapping("/email/{username}")
     public ResponseEntity<Response<Void>> confirmEmailChange(
-            @RequestParam String username,
+            @PathVariable String username,
             @RequestParam String token) {
 
         verificationService.confirmEmailChange(username, token);
@@ -40,8 +40,8 @@ public class VerificationController {
     }
 
     @DocResendConfirmationEmail
-    @PostMapping("/resend")
-    public ResponseEntity<Response<Void>> resendConfirmationEmail(@RequestParam String username){
+    @PostMapping("/resend/{username}")
+    public ResponseEntity<Response<Void>> resendConfirmationEmail(@PathVariable String username){
         verificationService.resendConfirmationEmail(username);
 
         int code = HttpStatus.OK.value();
@@ -56,9 +56,9 @@ public class VerificationController {
     }
 
     @DocConfirmEmail
-    @PostMapping("/confirm")
+    @PostMapping("/confirm/{username}")
     public ResponseEntity<Response<Void>> confirmEmail(
-            @RequestParam String username,
+            @PathVariable String username,
             @RequestParam String token){
         verificationService.confirmEmail(username, token);
 
@@ -74,8 +74,8 @@ public class VerificationController {
     }
 
     @DocSendForgotPasswordEmail
-    @PostMapping("/password/forgot")
-    public ResponseEntity<Response<Void>> sendForgotPasswordEmail(@RequestParam String username){
+    @PostMapping("/password/forgot/{username}")
+    public ResponseEntity<Response<Void>> sendForgotPasswordEmail(@PathVariable String username){
         verificationService.sendForgotPasswordEmail(username);
 
         int code = HttpStatus.OK.value();
@@ -90,9 +90,9 @@ public class VerificationController {
     }
 
     @DocResetPassword
-    @PostMapping("/password/reset")
+    @PostMapping("/password/reset/{username}")
     public ResponseEntity<Response<Void>> resetPassword(
-            @RequestParam String username,
+            @PathVariable String username,
             @RequestParam String token,
             @RequestBody @Valid VerificationPasswordResetRequest request){
 

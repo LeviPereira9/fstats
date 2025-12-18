@@ -36,7 +36,7 @@ Com base no arquivo `.env.example`, crie um `.env` preenchendo as variáveis e/o
 **3 - Execute a aplicação**
 
 ```bash
-docker-compose up --build
+docker-compose up -d
 ```
 
 A aplicação estará disponível em:
