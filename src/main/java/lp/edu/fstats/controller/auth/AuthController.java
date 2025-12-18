@@ -1,7 +1,10 @@
 package lp.edu.fstats.controller.auth;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lp.edu.fstats.doc.annotations.auth.DocLoginUser;
+import lp.edu.fstats.doc.annotations.auth.DocRegisterUser;
 import lp.edu.fstats.dto.auth.AuthLogin;
 import lp.edu.fstats.dto.auth.AuthRegister;
 import lp.edu.fstats.dto.auth.AuthResponse;
@@ -11,14 +14,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(
+        name = "Autenticação",
+        description = "Endpoints de autenticação, responsáveis pelo login e registro de usuários."
+)
 @RestController
 @RequestMapping("/${api.prefix}/auth")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class AuthController {
 
     private final AuthService authService;
 
+    @DocRegisterUser
     @PostMapping("/register")
     public ResponseEntity<Response<AuthResponse>> registerUser(@RequestBody @Valid AuthRegister request){
 
@@ -36,6 +43,7 @@ public class AuthController {
         return ResponseEntity.status(code).body(response);
     }
 
+    @DocLoginUser
     @PostMapping("/login")
     public ResponseEntity<Response<AuthResponse>> loginUser(@RequestBody @Valid AuthLogin request){
         AuthResponse data = authService.login(request);
