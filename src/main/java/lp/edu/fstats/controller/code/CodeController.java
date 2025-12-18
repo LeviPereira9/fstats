@@ -1,6 +1,10 @@
 package lp.edu.fstats.controller.code;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lp.edu.fstats.doc.annotations.code.DocCreateCode;
+import lp.edu.fstats.doc.annotations.code.DocDeleteCode;
+import lp.edu.fstats.doc.annotations.code.DocGetAllCodes;
 import lp.edu.fstats.dto.code.CodeRequest;
 import lp.edu.fstats.dto.code.CodeResponse;
 import lp.edu.fstats.dto.code.CodesResponse;
@@ -10,6 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(
+        name = "Integração",
+        description = "Endpoints para gerenciamento de códigos de integração utilizados na comunicação com APIs externas."
+)
 @RestController
 @RequestMapping("/${api.prefix}/competition/code")
 @RequiredArgsConstructor
@@ -17,6 +25,7 @@ public class CodeController {
 
     private final CodeService codeService;
 
+    @DocGetAllCodes
     @GetMapping
     public ResponseEntity<Response<CodesResponse>> getAllCodes(){
         CodesResponse data = codeService.getAllCodes();
@@ -31,7 +40,7 @@ public class CodeController {
         return ResponseEntity.ok(response);
     }
 
-
+    @DocCreateCode
     @PostMapping
     public ResponseEntity<Response<CodeResponse>> createCode(
             @RequestBody CodeRequest request
@@ -49,6 +58,7 @@ public class CodeController {
         return ResponseEntity.status(code).body(response);
     }
 
+    @DocDeleteCode
     @DeleteMapping("/{competitionId}")
     public ResponseEntity<Response<Void>> deleteCode(
             @PathVariable Integer competitionId
