@@ -1,7 +1,7 @@
 package lp.edu.fstats.dto.user;
 
 import lp.edu.fstats.model.user.User;
-import lp.edu.fstats.snippets.validator.Adult;
+import lp.edu.fstats.util.snippets.validator.Adult;
 
 import java.time.LocalDate;
 

@@ -1,4 +1,4 @@
-package lp.edu.fstats.snippets.validator;
+package lp.edu.fstats.util.snippets.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

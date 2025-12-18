@@ -4,7 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lp.edu.fstats.model.user.User;
-import lp.edu.fstats.snippets.validator.Adult;
+import lp.edu.fstats.util.snippets.validator.Adult;
 
 import java.time.LocalDate;
 
