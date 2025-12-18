@@ -1,6 +1,11 @@
 package lp.edu.fstats.controller.competition;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lp.edu.fstats.doc.annotations.competition.DocGetAverages;
+import lp.edu.fstats.doc.annotations.competition.DocGetCompetition;
+import lp.edu.fstats.doc.annotations.competition.DocGetMatches;
+import lp.edu.fstats.doc.annotations.competition.DocGetStandings;
 import lp.edu.fstats.dto.averages.AveragesResponse;
 import lp.edu.fstats.dto.competition.CompetitionResponse;
 import lp.edu.fstats.dto.match.MatchesResponse;
@@ -14,6 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(
+        name = "Competições",
+        description = "Endpoints para consulta de competições, partidas, médias e classificações."
+)
 @RestController
 @RequestMapping("/${api.prefix}/competition")
 @RequiredArgsConstructor
@@ -24,6 +33,7 @@ public class CompetitionController {
     private final StandingsService standingsService;
     private final AveragesService averagesService;
 
+    @DocGetCompetition
     @GetMapping("/{code}")
     public ResponseEntity<Response<CompetitionResponse>> getCompetition(
             @PathVariable String code
@@ -41,6 +51,7 @@ public class CompetitionController {
         return ResponseEntity.ok(response);
     }
 
+    @DocGetMatches
     @GetMapping("/{competitionId}/matches")
     public ResponseEntity<Response<MatchesResponse>> getMatches(
             @PathVariable Long competitionId,
@@ -58,6 +69,7 @@ public class CompetitionController {
         return ResponseEntity.ok(response);
     }
 
+    @DocGetAverages
     @GetMapping("/{competitionId}/averages")
     public ResponseEntity<Response<AveragesResponse>> getAverages(
             @PathVariable Long competitionId
@@ -74,6 +86,7 @@ public class CompetitionController {
         return ResponseEntity.ok(response);
     }
 
+    @DocGetStandings
     @GetMapping("/{competitionId}/standings")
     public ResponseEntity<Response<StandingsResponse>> getStandings(
             @PathVariable Long competitionId
