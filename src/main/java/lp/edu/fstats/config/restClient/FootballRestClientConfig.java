@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
 @Configuration
-public class RestClientConfig {
+public class FootballRestClientConfig {
     @Value("${api.external.url}")
     private String apiUrl;
     @Value("${api.external.key}")
@@ -15,7 +15,7 @@ public class RestClientConfig {
     private String apiValue;
 
     @Bean
-    public RestClient restClient() {
+    public RestClient footballRestClient() {
         return RestClient
                 .builder()
                 .baseUrl(apiUrl)

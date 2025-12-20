@@ -5,16 +5,20 @@ import lp.edu.fstats.integration.dto.competition.CompetitionExternalResponse;
 import lp.edu.fstats.integration.dto.matches.MatchesExternalResponse;
 import lp.edu.fstats.integration.dto.standings.StandingsExternalResponse;
 import lp.edu.fstats.integration.dto.teams.CompetitionTeamsExternalResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 import java.time.Year;
 
 @Component
-@RequiredArgsConstructor
 public class FootballApiClient {
 
     private final RestClient restClient;
+
+    public FootballApiClient(@Qualifier("footballRestClient") RestClient restClient) {
+        this.restClient = restClient;
+    }
 
     public MatchesExternalResponse getCurrentMatches(String code, Year season, Integer matchday){
         return restClient.get()
