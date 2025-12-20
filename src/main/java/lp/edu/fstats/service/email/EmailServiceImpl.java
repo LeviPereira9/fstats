@@ -1,3 +1,4 @@
+/*
 package lp.edu.fstats.service.email;
 
 import lombok.RequiredArgsConstructor;
@@ -119,3 +120,4 @@ public class EmailServiceImpl implements EmailService {
         this.sendEmail(new String[]{newEmail, oldEmail}, subject, content);
     }
 }
+*/
