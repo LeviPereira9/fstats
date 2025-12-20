@@ -42,7 +42,7 @@ public class VerificationToken {
     private boolean used = false;
 
     public boolean isExpired(){
-        return LocalDateTime.now().isAfter(expiresAt);
+        return BrazilTimeUtil.nowDateTime().isAfter(expiresAt);
     }
 
     public VerificationToken(){}
