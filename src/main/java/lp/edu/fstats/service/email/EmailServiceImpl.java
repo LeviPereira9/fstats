@@ -1,8 +1,8 @@
-/*
 package lp.edu.fstats.service.email;
 
 import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.exception.custom.CustomBadGatewayException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Profile("dev")
 public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
@@ -120,4 +121,3 @@ public class EmailServiceImpl implements EmailService {
         this.sendEmail(new String[]{newEmail, oldEmail}, subject, content);
     }
 }
-*/
