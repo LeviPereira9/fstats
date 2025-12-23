@@ -16,30 +16,9 @@ import org.springframework.context.annotation.Primary;
 public class JacksonConfig {
 
     @Bean
-    @Primary
     public ObjectMapper webObjectMapper(){
         return new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    }
-
-    @Bean
-    public ObjectMapper redisObjectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper()
-                .registerModule(new ParameterNamesModule())
-                .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule())
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-        PolymorphicTypeValidator polymorphicTypeValidator = BasicPolymorphicTypeValidator.builder()
-                .allowIfSubType(Object.class)
-                .build();
-
-        objectMapper.activateDefaultTyping(
-                polymorphicTypeValidator,
-                ObjectMapper.DefaultTyping.NON_FINAL,
-                JsonTypeInfo.As.PROPERTY);
-
-        return objectMapper;
     }
 }
