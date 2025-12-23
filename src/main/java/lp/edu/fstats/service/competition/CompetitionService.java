@@ -7,5 +7,5 @@ public interface CompetitionService {
 
     CompetitionResponse getCompetition(String code);
 
-    void saveCompetition(Competition competition);
+    Competition saveCompetition(Competition competition);
 }

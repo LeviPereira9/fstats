@@ -10,4 +10,6 @@ public interface MatchService {
     Map<Long, Match> findAllByExternalId(List<Long> externalIds);
 
     MatchesResponse getMatches(Long competitionId, Integer matchday);
+
+    void saveAll(List<Match> matchesToSave);
 }
