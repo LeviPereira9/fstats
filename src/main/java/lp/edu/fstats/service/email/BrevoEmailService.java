@@ -4,6 +4,7 @@ import lp.edu.fstats.integration.client.BrevoApiClient;
 import lp.edu.fstats.integration.dto.email.BrevoSendEmail;
 import lp.edu.fstats.integration.dto.email.Email;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
+@Profile("prod")
 public class BrevoEmailService implements EmailService {
 
     private final BrevoApiClient brevoApiClient;

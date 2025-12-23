@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.dto.averages.AveragesResponse;
 import lp.edu.fstats.model.avarages.Averages;
 import lp.edu.fstats.repository.averages.AveragesRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,9 +29,16 @@ public class AveragesServiceImpl implements AveragesService{
     }
 
     @Override
+    @Cacheable(value = "averages", key = "'competitionId:' + #competitionId")
     public AveragesResponse findAllByCompetition(Long competitionId){
         List<Averages> averages = averagesRepository.findAllByCompetition_Id(competitionId);
 
         return AveragesResponse.toResponse(averages);
+    }
+
+    @Override
+    @CacheEvict(value = "averages", allEntries = true)
+    public void saveAll(List<Averages> averagesToSave) {
+        averagesRepository.saveAll(averagesToSave);
     }
 }

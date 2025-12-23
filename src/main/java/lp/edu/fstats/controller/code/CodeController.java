@@ -2,6 +2,7 @@ package lp.edu.fstats.controller.code;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lp.edu.fstats.config.redis.ratelimit.snippets.RateLimit;
 import lp.edu.fstats.doc.annotations.code.DocCreateCode;
 import lp.edu.fstats.doc.annotations.code.DocDeleteCode;
 import lp.edu.fstats.doc.annotations.code.DocGetAllCodes;
@@ -25,6 +26,7 @@ public class CodeController {
 
     private final CodeService codeService;
 
+    @RateLimit
     @DocGetAllCodes
     @GetMapping
     public ResponseEntity<Response<CodesResponse>> getAllCodes(){

@@ -11,6 +11,7 @@ import lp.edu.fstats.repository.competition.CompetitionRepository;
 import lp.edu.fstats.repository.match.MatchRepository;
 import lp.edu.fstats.repository.probability.ProbabilityRepository;
 import lp.edu.fstats.service.poisson.PoissonService;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -111,4 +112,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
         probabilityRepository.saveAll(probabilitiesToSave);
     }
 
+    @Override
+    public void saveAll(List<Probability> probabilitiesToSave) {
+        probabilityRepository.saveAll(probabilitiesToSave);
+    }
 }

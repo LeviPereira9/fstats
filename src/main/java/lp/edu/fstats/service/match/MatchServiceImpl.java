@@ -6,6 +6,8 @@ import lp.edu.fstats.dto.match.MatchesResponse;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.model.match.Match;
 import lp.edu.fstats.repository.match.MatchRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +30,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    @Cacheable(value = "matches", key = "'competition:' + #competitionId + ':matchday:' + #matchDay")
     public MatchesResponse getMatches(Long competitionId, Integer matchDay) {
         List<Match> matches = matchRepository.findAllByCompetition_IdAndMatchDay(competitionId, matchDay);
 
@@ -38,5 +41,11 @@ public class MatchServiceImpl implements MatchService {
         List<MatchResponse> matchesResponse = matches.stream().map(MatchResponse::new).toList();
 
         return new MatchesResponse(matchesResponse);
+    }
+
+    @Override
+    @CacheEvict(value = "matches", allEntries = true)
+    public void saveAll(List<Match> matchesToSave) {
+        matchRepository.saveAll(matchesToSave);
     }
 }

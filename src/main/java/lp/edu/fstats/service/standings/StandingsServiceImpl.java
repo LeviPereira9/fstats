@@ -5,6 +5,8 @@ import lp.edu.fstats.dto.standings.StandingsResponse;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.model.standings.Standings;
 import lp.edu.fstats.repository.standings.StandingsRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
@@ -26,6 +28,7 @@ public class StandingsServiceImpl implements StandingsService {
     }
 
     @Override
+    @Cacheable(value = "standings", key = "'competitionId:' + #competitionId")
     public StandingsResponse getStandings(Long competitionId) {
         List<Standings> standings = standingsRepository.findAllByCompetition_Id(competitionId);
 
@@ -34,5 +37,11 @@ public class StandingsServiceImpl implements StandingsService {
         }
 
         return StandingsResponse.toResponse(standings);
+    }
+
+    @Override
+    @CacheEvict(value = "standings", allEntries = true)
+    public void saveAll(List<Standings> standingsToSave) {
+        standingsRepository.saveAll(standingsToSave);
     }
 }

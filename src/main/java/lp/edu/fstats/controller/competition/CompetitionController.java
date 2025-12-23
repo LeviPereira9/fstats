@@ -2,6 +2,7 @@ package lp.edu.fstats.controller.competition;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lp.edu.fstats.config.redis.ratelimit.snippets.RateLimit;
 import lp.edu.fstats.doc.annotations.competition.DocGetAverages;
 import lp.edu.fstats.doc.annotations.competition.DocGetCompetition;
 import lp.edu.fstats.doc.annotations.competition.DocGetMatches;
@@ -34,6 +35,7 @@ public class CompetitionController {
     private final AveragesService averagesService;
 
     @DocGetCompetition
+    @RateLimit
     @GetMapping("/{code}")
     public ResponseEntity<Response<CompetitionResponse>> getCompetition(
             @PathVariable String code
@@ -52,6 +54,7 @@ public class CompetitionController {
     }
 
     @DocGetMatches
+    @RateLimit(requests = 15)
     @GetMapping("/{competitionId}/matches")
     public ResponseEntity<Response<MatchesResponse>> getMatches(
             @PathVariable Long competitionId,
@@ -70,6 +73,7 @@ public class CompetitionController {
     }
 
     @DocGetAverages
+    @RateLimit
     @GetMapping("/{competitionId}/averages")
     public ResponseEntity<Response<AveragesResponse>> getAverages(
             @PathVariable Long competitionId
@@ -87,6 +91,7 @@ public class CompetitionController {
     }
 
     @DocGetStandings
+    @RateLimit
     @GetMapping("/{competitionId}/standings")
     public ResponseEntity<Response<StandingsResponse>> getStandings(
             @PathVariable Long competitionId

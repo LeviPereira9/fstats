@@ -7,6 +7,8 @@ import lp.edu.fstats.dto.code.CodesResponse;
 import lp.edu.fstats.exception.custom.CustomDuplicateFieldException;
 import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.repository.code.CodeRepository;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +20,7 @@ public class CodeServiceImpl implements CodeService {
 
     private final CodeRepository codeRepository;
 
+    @Cacheable(value = "codes")
     @Override
     public CodesResponse getAllCodes() {
         List<Code> codes = codeRepository.findAll();
@@ -25,6 +28,7 @@ public class CodeServiceImpl implements CodeService {
         return CodesResponse.toResponse(codes);
     }
 
+    @CacheEvict(value = "codes")
     @Override
     public CodeResponse createCode(CodeRequest request) {
         Code code = request.toModel();
@@ -38,6 +42,7 @@ public class CodeServiceImpl implements CodeService {
         return new CodeResponse(codeRepository.save(code));
     }
 
+    @CacheEvict(value = "codes")
     @Override
     public void deleteCode(Integer codeId) {
         codeRepository.deleteById(codeId);
