@@ -60,4 +60,7 @@ public class Match {
     private Probability probability;
 
 
+    public boolean isFinished(){
+        return status.equals("FINISHED");
+    }
 }

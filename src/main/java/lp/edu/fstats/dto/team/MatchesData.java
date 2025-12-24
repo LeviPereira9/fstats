@@ -76,6 +76,10 @@ public record MatchesData(
         List<TeamData> awayTeam = new ArrayList<>();
 
         for(Match match : matches){
+            if(!match.isFinished()){
+                continue;
+            }
+
             homeTeam.add(new TeamData(
                     match.getHomeTeam().getId(),
                     match.getMatchDay(),
