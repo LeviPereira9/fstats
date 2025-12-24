@@ -1,4 +1,4 @@
-package lp.edu.fstats.service.rateLimiter;
+package lp.edu.fstats.integration.service.rateLimiter;
 
 public interface RateLimiter {
 

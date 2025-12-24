@@ -1,4 +1,4 @@
-package lp.edu.fstats.service.rateLimiter;
+package lp.edu.fstats.integration.service.rateLimiter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 @RequiredArgsConstructor
-public class ExternalApiRateLimiter implements RateLimiter {
+public class FootballExternalApiRateLimiter implements RateLimiter {
 
     private final AtomicInteger REQUEST_COUNT = new AtomicInteger(0);
     private final int MAX_REQUESTS = 10;
@@ -28,7 +28,7 @@ public class ExternalApiRateLimiter implements RateLimiter {
     }
 
     private void resetIfNeeded() {
-        if(Duration.between(LAST_RESET, Instant.now()).compareTo(RESET_INTERVAL) >= 0) {
+        if(Instant.now().isAfter(LAST_RESET.plus(RESET_INTERVAL))) {
             this.reset();
         }
     }
@@ -45,4 +45,5 @@ public class ExternalApiRateLimiter implements RateLimiter {
             Thread.currentThread().interrupt();
         }
     }
+
 }
