@@ -1,10 +1,10 @@
 package lp.edu.fstats.integration.client;
 
-import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.integration.dto.competition.CompetitionExternalResponse;
 import lp.edu.fstats.integration.dto.matches.MatchesExternalResponse;
 import lp.edu.fstats.integration.dto.standings.StandingsExternalResponse;
 import lp.edu.fstats.integration.dto.teams.CompetitionTeamsExternalResponse;
+import lp.edu.fstats.integration.service.rateLimiter.RateLimiter;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -16,11 +16,18 @@ public class FootballApiClient {
 
     private final RestClient restClient;
 
-    public FootballApiClient(@Qualifier("footballRestClient") RestClient restClient) {
+    private final RateLimiter rateLimiter;
+
+    public FootballApiClient(
+            @Qualifier("footballRestClient") RestClient restClient,
+            RateLimiter rateLimiter) {
         this.restClient = restClient;
+        this.rateLimiter = rateLimiter;
     }
 
     public MatchesExternalResponse getCurrentMatches(String code, Year season, Integer matchday){
+        rateLimiter.acquire();
+
         return restClient.get()
                 .uri(uriBuilder ->
                         uriBuilder
@@ -33,6 +40,8 @@ public class FootballApiClient {
     }
 
     public CompetitionExternalResponse getCurrentCompetition(String code){
+        rateLimiter.acquire();
+
         return restClient.get()
                 .uri(uriBuilder ->
                         uriBuilder
@@ -43,6 +52,8 @@ public class FootballApiClient {
     }
 
     public StandingsExternalResponse getCurrentTotalStandings(String code, Year season){
+        rateLimiter.acquire();
+
         return restClient.get()
                 .uri(uriBuilder ->
                         uriBuilder
@@ -54,6 +65,8 @@ public class FootballApiClient {
     }
 
     public CompetitionTeamsExternalResponse getCurrentTeams(String code, Year season){
+        rateLimiter.acquire();
+
         return restClient.get()
                 .uri(uriBuilder ->
                         uriBuilder
