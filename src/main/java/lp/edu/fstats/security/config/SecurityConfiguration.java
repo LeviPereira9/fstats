@@ -52,6 +52,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AuthUtil.PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers("/api/v1/competition/code").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/auto").hasRole("SUPER_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(handling -> handling

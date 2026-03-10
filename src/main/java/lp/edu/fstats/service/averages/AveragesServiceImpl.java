@@ -29,7 +29,7 @@ public class AveragesServiceImpl implements AveragesService{
     }
 
     @Override
-    @Cacheable(value = "averages", key = "'competitionId:' + #competitionId")
+    //@Cacheable(value = "averages", key = "'competitionId:' + #competitionId")
     public AveragesResponse findAllByCompetition(Long competitionId){
         List<Averages> averages = averagesRepository.findAllByCompetition_Id(competitionId);
 
@@ -37,7 +37,7 @@ public class AveragesServiceImpl implements AveragesService{
     }
 
     @Override
-    @CacheEvict(value = "averages", allEntries = true)
+    //@CacheEvict(value = "averages", allEntries = true)
     public void saveAll(List<Averages> averagesToSave) {
         averagesRepository.saveAll(averagesToSave);
     }

@@ -31,8 +31,11 @@ public class CompetitionSyncStep {
 
         CompetitionExternalResponse externalCompetition = footballApiClient.getCurrentCompetition(code);
 
+
         if(savedCompetition == null){
-            boolean isFinished = competitionRepository.existsByExternalId(externalCompetition.id());
+
+            boolean isFinished = competitionRepository.existsByExternalId(externalCompetition.currentSeason().id());
+
 
             if(isFinished){
                 competition = null;

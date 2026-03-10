@@ -13,7 +13,7 @@ public record CompetitionExternalResponse(
     public Competition toModel(){
         Competition competition = new Competition();
 
-        competition.setExternalId(id);
+        competition.setExternalId(currentSeason().id());
         competition.setName(name);
         competition.setCode(code);
         competition.setType(type);

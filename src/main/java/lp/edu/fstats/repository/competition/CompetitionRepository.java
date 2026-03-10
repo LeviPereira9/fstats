@@ -23,7 +23,7 @@ public interface CompetitionRepository extends JpaRepository<Competition, Long> 
     Optional<Competition> findByCode(String code);
 
     @Query("""
-    SELECT c FROM Competition c WHERE c.code = :code AND c.status = 'Em Andamento'
+    SELECT c FROM Competition c WHERE c.code = :code AND c.status = 'Em andamento'
 """)
     Optional<Competition> findByCodeAndStatus(@Param("code") String code);
 

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Profile("dev")
 @RestController
 @RequestMapping("/${api.prefix}/auto")
 @RequiredArgsConstructor
@@ -19,5 +18,10 @@ public class AutoController {
     @PostMapping("/{code}")
     public void startSync(@PathVariable String code) {
         externalSyncOrchestrator.sync(code);
+    }
+
+    @PostMapping
+    public void startSyncs() {
+        externalSyncOrchestrator.syncAll();
     }
 }
