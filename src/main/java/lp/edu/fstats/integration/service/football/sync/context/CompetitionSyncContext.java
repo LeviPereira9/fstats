@@ -10,12 +10,14 @@ import java.util.List;
 
 @Data
 public class CompetitionSyncContext {
-    private Year season;
 
     private Competition competition;
     private List<Team> teams;
     private List<Match> matches;
 
+    public Year getSeason(){
+        return Year.of(competition.getStartDate().getYear());
+    }
 
     public boolean hasActiveCompetition(){
         return competition != null;
@@ -29,7 +31,4 @@ public class CompetitionSyncContext {
         return competition.getCode();
     }
 
-    public CompetitionSyncContext(Year season){
-        this.season = season;
-    }
 }

@@ -22,7 +22,7 @@ public class CompetitionSyncStep {
 
     public CompetitionSyncContext sync(String code, Year season){
 
-        CompetitionSyncContext context = new CompetitionSyncContext(season);
+        CompetitionSyncContext context = new CompetitionSyncContext();
 
         Competition competition;
 

@@ -49,15 +49,25 @@ public class ExternalSyncOrchestrator {
 
         Year season = Year.now();
 
+        System.out.println("Season: " + season);
+
         CompetitionSyncContext csc = competitionStep.sync(code, season);
 
+        System.out.println("Achou competição ativa?");
+
         if(!csc.hasActiveCompetition()){
+        System.out.println("Não");
             return;
         }
 
+        System.out.println("Sim");
+
+        System.out.println("Procure os times");
         TeamSyncContext tsc = teamSyncStep.sync(csc);
+        System.out.println("Procure as partidas");
         matchSyncStep.sync(csc, tsc);
 
+        System.out.println("Procure as standings e avarages e probability");
         StandingsSyncContext ssc = standingsSyncStep.sync(csc, tsc);
         averagesStep.sync(csc, tsc, ssc);
         probabilityStep.sync(csc);
