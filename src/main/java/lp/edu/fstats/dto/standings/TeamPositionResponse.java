@@ -5,6 +5,7 @@ import lp.edu.fstats.model.standings.Standings;
 
 public record TeamPositionResponse(
     Long teamId,
+    String emblem,
     String teamShortName,
     Integer position,
     Integer playedGames,
@@ -21,6 +22,7 @@ public record TeamPositionResponse(
     public TeamPositionResponse (Standings source){
         this(
                 source.getTeam().getId(),
+                source.getTeam().getCrest(),
                 source.getTeam().getShortName(),
                 source.getPosition(),
                 source.getPlayedGames(),
