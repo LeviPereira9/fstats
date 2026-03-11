@@ -28,7 +28,7 @@ public class StandingsServiceImpl implements StandingsService {
     }
 
     @Override
-    //@Cacheable(value = "standings", key = "'competitionId:' + #competitionId")
+    @Cacheable(value = "standings", key = "'competitionId:' + #competitionId")
     public StandingsResponse getStandings(Long competitionId) {
         List<Standings> standings = standingsRepository.findAllByCompetition_Id(competitionId);
 
@@ -40,7 +40,7 @@ public class StandingsServiceImpl implements StandingsService {
     }
 
     @Override
-    //@CacheEvict(value = "standings", allEntries = true)
+    @CacheEvict(value = "standings", allEntries = true)
     public void saveAll(List<Standings> standingsToSave) {
         standingsRepository.saveAll(standingsToSave);
     }

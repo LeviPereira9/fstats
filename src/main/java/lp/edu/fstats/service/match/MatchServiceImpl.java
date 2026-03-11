@@ -30,7 +30,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    //@Cacheable(value = "matches", key = "'competition:' + #competitionId + ':matchday:' + #matchDay")
+    @Cacheable(value = "matches", key = "'competition:' + #competitionId + ':matchday:' + #matchDay")
     public MatchesResponse getMatches(Long competitionId, Integer matchDay) {
         List<Match> matches = matchRepository.findAllByCompetition_IdAndMatchDay(competitionId, matchDay);
 
@@ -44,7 +44,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    //@CacheEvict(value = "matches", allEntries = true)
+    @CacheEvict(value = "matches", allEntries = true)
     public void saveAll(List<Match> matchesToSave) {
         matchRepository.saveAll(matchesToSave);
     }

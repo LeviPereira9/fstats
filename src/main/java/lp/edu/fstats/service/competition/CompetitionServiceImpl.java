@@ -15,7 +15,7 @@ public class CompetitionServiceImpl implements CompetitionService {
 
     private final CompetitionRepository competitionRepository;
 
-    //@Cacheable(value = "competition", key = "'code:'+#code")
+    @Cacheable(value = "competition", key = "'code:'+#code")
     @Override
     public CompetitionResponse getCompetition(String code) {
         Competition competition = competitionRepository.findByCode(code)
@@ -25,7 +25,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     }
 
     @Override
-    //@CacheEvict(value = "competition", allEntries = true)
+    @CacheEvict(value = "competition", allEntries = true)
     public Competition saveCompetition(Competition competition) {
 
         competition = competitionRepository.save(competition);
