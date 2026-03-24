@@ -30,7 +30,7 @@ public class ExternalSyncOrchestrator {
     private final ProbabilityStep probabilityStep;
 
 
-    //@Scheduled(cron = "0 0 2,10,18 * * *", zone = "America/Sao_Paulo")
+    @Scheduled(cron = "0 0 2,10,18 * * *", zone = "America/Sao_Paulo")
     @Transactional
     public void syncAll(){
         List<Code> codes = codeRepository.findAll();
