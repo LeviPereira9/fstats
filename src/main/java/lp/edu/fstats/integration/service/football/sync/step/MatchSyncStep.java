@@ -31,26 +31,28 @@ public class MatchSyncStep {
 
     public void sync(CompetitionSyncContext csc, TeamSyncContext tsc){
 
-        this.sync(csc.getCompetition(), tsc.getTeams(), csc.getSeason(), true);
+        this.sync(csc.getCompetition(), tsc.getTeams(), csc.getSeason(), -1);
     }
 
-    private void sync(Competition competition, List<Team> teams, Year season, boolean firstCall){
+    private void sync(Competition competition, List<Team> teams, Year season, int currentMatchDay){
 
         int matchDay;
 
-        if(firstCall){
-            matchDay = competition.getLastFinishedMatchDay() + 1;
+        if(currentMatchDay < 0){
+            matchDay = competition.getLastCompletedMatchDay() + 1;
         } else {
-            matchDay = competition.getCurrentMatchDay();
+            matchDay = currentMatchDay + 1;
         }
+
+        System.out.println("Competição Dia: " + matchDay);
 
         MatchesExternalResponse externalMatches = footballApiClient
                 .getCurrentMatches(competition.getCode(), season, matchDay);
 
 
-        if(externalMatches.matches().isEmpty()){
+        if(!externalMatches.hasMatches()){
 
-            competition.decrementMatchDay();
+            competition.decrementStoredMatchDay();
 
             if(competition.isFinished()){
                 competition.setStatus("Finalizada");
@@ -107,15 +109,18 @@ public class MatchSyncStep {
         matchService.saveAll(matchesToSave);
         competitionService.saveCompetition(competition);
 
-        if (competition.isAheadByTwoMatchDays()) {
+        if (!competition.isTwoStoredMatchDaysAhead() || matchDay < competition.getApiCurrentMatchDay()) {
             competition.incrementMatchDay();
-            this.sync(competition, teams, season, false);
+            this.sync(competition, teams, season, matchDay);
         }
     }
 
     private Match getMatch(Match currentMatch, MatchExternalResponse externalMatch) {
 
-        if(currentMatch == null) return externalMatch.toModel();
+        if(currentMatch == null) {
+            System.out.println("Ta vazio.");
+            return externalMatch.toModel();
+        };
 
         return externalMatch.update(currentMatch);
     }
