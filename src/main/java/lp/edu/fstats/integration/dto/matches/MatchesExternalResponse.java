@@ -9,6 +9,10 @@ public record MatchesExternalResponse (
         List<MatchExternalResponse> matches
 ){
 
+    public boolean hasMatches(){
+        return !matches().isEmpty();
+    }
+
     public List<Long> getMatchesExternalIds(){
         return matches
                 .stream()
