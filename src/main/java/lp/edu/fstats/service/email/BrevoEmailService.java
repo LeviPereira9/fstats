@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-@Profile("prod")
+@Profile({"prod", "uni"})
 public class BrevoEmailService implements EmailService {
 
     private final BrevoApiClient brevoApiClient;
