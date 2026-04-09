@@ -17,7 +17,7 @@ public class AutoController {
 
     @PostMapping("/{code}")
     public void startSync(@PathVariable String code) {
-        externalSyncOrchestrator.sync(code);
+        externalSyncOrchestrator.syncCompetition(code);
     }
 
     @PostMapping
