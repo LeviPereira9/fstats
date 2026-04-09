@@ -11,7 +11,6 @@ import lp.edu.fstats.repository.competition.CompetitionRepository;
 import lp.edu.fstats.repository.match.MatchRepository;
 import lp.edu.fstats.repository.probability.ProbabilityRepository;
 import lp.edu.fstats.service.poisson.PoissonService;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -47,7 +46,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
             competition = recursiveCompetition;
         }
 
-        if(competition == null || competition.getCurrentMatchDay() < 3){
+        if(competition == null || competition.getStoredMatchDay() < 3){
             return;
         }
 
@@ -57,7 +56,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 
         Integer startCount = maxMatchDay == null ? 3 : maxMatchDay + 1;
 
-        if(startCount > competition.getExternalCurrentMatchDay()){
+        if(startCount > competition.getApiCurrentMatchDay()){
             return;
         }
 
@@ -101,7 +100,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
             probabilitiesToSave.add(probability);
         }
 
-        if(startCount <= competition.getExternalCurrentMatchDay()){
+        if(startCount <= competition.getApiCurrentMatchDay()){
             manageProbability(
                     competition,
                     startCount,
