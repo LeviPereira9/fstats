@@ -6,6 +6,8 @@ import lp.edu.fstats.integration.dto.standings.StandingsExternalResponse;
 import lp.edu.fstats.integration.dto.teams.CompetitionTeamsExternalResponse;
 import lp.edu.fstats.integration.service.rateLimiter.RateLimiter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -25,6 +27,10 @@ public class FootballApiClient {
         this.rateLimiter = rateLimiter;
     }
 
+    @Retryable(
+            retryFor = Exception.class,
+            backoff = @Backoff(delay = 2000, multiplier = 2)
+    )
     public MatchesExternalResponse getCurrentMatches(String code, Year season, Integer matchday){
         rateLimiter.acquire();
 
@@ -39,6 +45,10 @@ public class FootballApiClient {
                 .body(MatchesExternalResponse.class);
     }
 
+    @Retryable(
+            retryFor = Exception.class,
+            backoff = @Backoff(delay = 2000, multiplier = 2)
+    )
     public CompetitionExternalResponse getCurrentCompetition(String code){
         rateLimiter.acquire();
 
@@ -51,6 +61,10 @@ public class FootballApiClient {
                 .body(CompetitionExternalResponse.class);
     }
 
+    @Retryable(
+            retryFor = Exception.class,
+            backoff = @Backoff(delay = 2000, multiplier = 2)
+    )
     public StandingsExternalResponse getCurrentTotalStandings(String code, Year season){
         rateLimiter.acquire();
 
@@ -64,6 +78,10 @@ public class FootballApiClient {
                 .body(StandingsExternalResponse.class);
     }
 
+    @Retryable(
+            retryFor = Exception.class,
+            backoff = @Backoff(delay = 2000, multiplier = 2)
+    )
     public CompetitionTeamsExternalResponse getCurrentTeams(String code, Year season){
         rateLimiter.acquire();
 
