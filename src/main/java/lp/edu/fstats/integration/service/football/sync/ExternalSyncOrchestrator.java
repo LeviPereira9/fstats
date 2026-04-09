@@ -9,12 +9,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.repository.code.CodeRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @RequiredArgsConstructor
@@ -29,9 +31,12 @@ public class ExternalSyncOrchestrator {
     private final AveragesStep averagesStep;
     private final ProbabilityStep probabilityStep;
 
+    private final ConcurrentHashMap<String, ReentrantLock> locks = new ConcurrentHashMap<>();
+
 
     @Scheduled(cron = "0 0 2,10,18 * * *", zone = "America/Sao_Paulo")
     @Transactional
+    @Async("competitionsThread")
     public void syncAll(){
         List<Code> codes = codeRepository.findAll();
 
@@ -44,7 +49,21 @@ public class ExternalSyncOrchestrator {
         }
     }
 
-    public void sync(String code){
+    @Async("competitionThread")
+    public void syncCompetition(String code){
+        locks.putIfAbsent(code, new ReentrantLock());
+        ReentrantLock lock = locks.get(code);
+
+        if(!lock.tryLock()){
+            throw new RuntimeException("Lock acquired");
+        }
+
+        this.sync(code);
+
+        lock.unlock();
+    }
+
+    private void sync(String code){
 
 
         Year season = Year.now();
