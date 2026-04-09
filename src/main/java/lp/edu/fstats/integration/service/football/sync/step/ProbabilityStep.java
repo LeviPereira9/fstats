@@ -38,7 +38,7 @@ public class ProbabilityStep {
             List<Match> recursiveMatches
     ){
 
-        if(competition.getExternalCurrentMatchDay() < 3){
+        if(competition.getApiCurrentMatchDay() < 3){
             return;
         }
 
@@ -46,7 +46,7 @@ public class ProbabilityStep {
 
         Integer startCount = maxMatchDay == null ? 3 : maxMatchDay + 1;
 
-        if(startCount > competition.getExternalCurrentMatchDay()){
+        if(startCount > competition.getApiCurrentMatchDay()){
             return;
         }
 
@@ -90,7 +90,7 @@ public class ProbabilityStep {
             probabilitiesToSave.add(probability);
         }
 
-        if(startCount <= competition.getExternalCurrentMatchDay()){
+        if(startCount <= competition.getApiCurrentMatchDay()){
             this.sync(
                     competition,
                     startCount,
