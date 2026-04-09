@@ -37,39 +37,39 @@ public class Competition {
     private boolean active = true;
 
     @Column(name = "Nr_RodadaAtual")
-    private Integer currentMatchDay = 1;
+    private Integer storedMatchDay = 1;
 
     @Column(name = "Nr_ExternoRodadaAtual")
-    private Integer externalCurrentMatchDay = 1;
+    private Integer apiCurrentMatchDay = 1;
 
     @Column(name = "St_Competicao")
     private String status = "Em andamento";
 
     @Column(name = "Nr_UltimaRodadaFinalizada")
-    private Integer lastFinishedMatchDay = 0;
+    private Integer lastCompletedMatchDay = 0;
 
     public void incrementMatchDay() {
-        boolean alreadyHasFutureMatches = currentMatchDay.equals(externalCurrentMatchDay + 2);
+        boolean alreadyHasFutureMatches = storedMatchDay.equals(apiCurrentMatchDay + 2);
 
-        if(!alreadyHasFutureMatches) currentMatchDay += 1;;
+        if(!alreadyHasFutureMatches) storedMatchDay += 1;;
     }
 
     public void incrementLastFinishedMatchDay() {
-        lastFinishedMatchDay += 1;
+        lastCompletedMatchDay += 1;
     }
 
-    public void decrementMatchDay(){
-        boolean canDecrement = externalCurrentMatchDay.equals(currentMatchDay - 1);
+    public void decrementStoredMatchDay(){
+        boolean canDecrement = apiCurrentMatchDay.equals(storedMatchDay - 1);
 
-        if(canDecrement) currentMatchDay -= 1;
+        if(canDecrement) storedMatchDay -= 1;
     }
 
-    public boolean isAheadByTwoMatchDays() {
+    public boolean isTwoStoredMatchDaysAhead() {
 
-        return currentMatchDay < externalCurrentMatchDay + 2;
+        return storedMatchDay.equals(apiCurrentMatchDay + 2);
     }
 
     public boolean isFinished() {
-        return currentMatchDay.equals(lastFinishedMatchDay) && externalCurrentMatchDay.equals(lastFinishedMatchDay);
+        return storedMatchDay.equals(lastCompletedMatchDay) && apiCurrentMatchDay.equals(lastCompletedMatchDay);
     }
 }

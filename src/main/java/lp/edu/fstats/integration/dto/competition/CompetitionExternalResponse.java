@@ -21,7 +21,7 @@ public record CompetitionExternalResponse(
 
         competition.setStartDate(currentSeason.startDate());
         competition.setEndDate(currentSeason.endDate());
-        competition.setExternalCurrentMatchDay(currentSeason.currentMatchDay());
+        competition.setApiCurrentMatchDay(currentSeason.currentMatchDay());
 
         return competition;
     }
@@ -29,7 +29,7 @@ public record CompetitionExternalResponse(
     public Competition update(Competition target) {
         target.setStartDate(currentSeason.startDate());
         target.setEndDate(currentSeason.endDate());
-        target.setExternalCurrentMatchDay(currentSeason.currentMatchDay());
+        target.setApiCurrentMatchDay(currentSeason.currentMatchDay());
 
         return target;
     }

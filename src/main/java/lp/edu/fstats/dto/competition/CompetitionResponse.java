@@ -1,6 +1,5 @@
 package lp.edu.fstats.dto.competition;
 
-import jakarta.persistence.Column;
 import lp.edu.fstats.model.competition.Competition;
 
 import java.time.LocalDate;
@@ -26,9 +25,9 @@ public record CompetitionResponse(
                 competition.getCode(),
                 competition.getType(),
                 competition.getEmblem(),
-                competition.getExternalCurrentMatchDay(),
-                competition.getCurrentMatchDay(),
-                competition.getLastFinishedMatchDay(),
+                competition.getApiCurrentMatchDay(),
+                competition.getStoredMatchDay(),
+                competition.getLastCompletedMatchDay(),
                 competition.getCount(),
                 competition.getStartDate(),
                 competition.getEndDate()
