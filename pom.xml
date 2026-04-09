@@ -112,6 +112,13 @@
         </dependency>
         <!---->
 
+        <!--Retry-->
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+        </dependency>
+
+        <!---->
         <!--Tests-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
