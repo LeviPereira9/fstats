@@ -47,12 +47,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void validateRegisterRequest(AuthRegister request) {
-        boolean emailConflict = userRepository.existsByEmail(request.email());
-        boolean usernameConflict = userRepository.existsByUsername(request.username());
-
         if(!request.passwordMatch()){
             throw CustomBadRequestException.passwordDontMatch();
         }
+
+        boolean emailConflict = userRepository.existsByEmail(request.email());
+        boolean usernameConflict = userRepository.existsByUsername(request.username());
 
         if(emailConflict){
             throw CustomDuplicateFieldException.email();
