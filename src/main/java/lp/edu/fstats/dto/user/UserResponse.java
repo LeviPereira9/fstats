@@ -9,7 +9,9 @@ public record UserResponse(
         String profilePicture,
         String username,
         String email,
+        String bio,
         LocalDate dateOfBirth,
+        LocalDate createdAt,
         boolean verified,
         String role
 
@@ -21,7 +23,9 @@ public record UserResponse(
                 source.getProfilePicture(),
                 source.getUsername(),
                 source.getEmail(),
+                source.getBio(),
                 source.getDateOfBirth(),
+                source.getCreatedAt(),
                 source.isVerified(),
                 source.getRole().getName()
         );

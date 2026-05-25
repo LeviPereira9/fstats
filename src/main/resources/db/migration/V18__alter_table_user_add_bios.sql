@@ -1,0 +1,2 @@
+ALTER TABLE TB_Usuario ADD COLUMN
+    Ds_Bio VARCHAR(155);
