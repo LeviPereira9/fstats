@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lp.edu.fstats.dto.averages.AverageResponse;
 import lp.edu.fstats.dto.averages.AveragesResponse;
+import lp.edu.fstats.dto.code.CodesResponse;
 import lp.edu.fstats.dto.competition.CompetitionResponse;
 import lp.edu.fstats.dto.match.MatchResponse;
 import lp.edu.fstats.dto.match.MatchesResponse;
@@ -58,6 +59,8 @@ public class RedisConfig {
                         typedCache(objectMapper, AveragesResponse.class, Duration.ofMinutes(15)))
                 .withCacheConfiguration("standings",
                         typedCache(objectMapper, StandingsResponse.class, Duration.ofMinutes(15)))
+                .withCacheConfiguration("codes",
+                        typedCache(objectMapper, CodesResponse.class, Duration.ofMinutes(30)))
                 .build();
     }
 }
