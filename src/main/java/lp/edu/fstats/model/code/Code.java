@@ -16,4 +16,7 @@ public class Code {
     @Column(name = "Ds_Codigo")
     private String code;
 
+    @Column(name = "Nm_Competicao")
+    private String name;
+
 }
