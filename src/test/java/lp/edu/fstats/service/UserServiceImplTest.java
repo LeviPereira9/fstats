@@ -1,17 +1,16 @@
-package lp.edu.fstats.unit.user;
+package lp.edu.fstats.service;
 
 import lp.edu.fstats.dto.user.*;
 import lp.edu.fstats.exception.custom.CustomBadRequestException;
 import lp.edu.fstats.exception.custom.CustomForbiddenActionException;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
-import lp.edu.fstats.model.user.Role;
 import lp.edu.fstats.model.user.User;
 import lp.edu.fstats.repository.user.UserRepository;
 import lp.edu.fstats.response.page.PageResponse;
 import lp.edu.fstats.service.user.UserServiceImpl;
 import lp.edu.fstats.service.verification.VerificationService;
+import static lp.edu.fstats.factory.UserTestFactory.*;
 
-import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +26,7 @@ import static org.mockito.Mockito.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
 
@@ -48,41 +45,20 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    // Helpers
-    private void mockAuthenticatedUser(User user) {
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
 
     @AfterEach
     void clearSecurityContext() {
         SecurityContextHolder.clearContext();
     }
 
-    private User buildUser(String username) {
-        User user = new User();
-        user.setId(1L);
-        user.setUsername(username);
-        user.setEmail(username + "@email.com");
-        user.setPassword(new BCryptPasswordEncoder().encode("senha123"));
-        user.setRole(Role.USER);
-        user.setVerified(true);
-        return user;
-    }
 
-    private User buildAdmin(String username) {
-        User user = buildUser(username);
-        user.setRole(Role.ADMIN);
-        return user;
-    }
 
     // getUser
     @Test
     void getUser_shouldReturnUserResponse_whenSelfRequest() {
         User user = buildUser("joao");
 
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
 
@@ -97,7 +73,7 @@ class UserServiceImplTest {
     void getUser_shouldReturnUserResponse_whenRequesterIsAdmin(){
         User admin = buildAdmin("admin");
 
-        this.mockAuthenticatedUser(admin);
+        mockAuthenticatedUser(admin);
 
         User user = buildUser("joao");
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
@@ -113,7 +89,7 @@ class UserServiceImplTest {
     void getUser_shouldThrowForbidden_whenNotSelfOrAdmin(){
         User user = buildUser("pedro");
 
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         assertThrows(CustomForbiddenActionException.class,
                 () -> userService.getUser("joao"));
@@ -125,7 +101,7 @@ class UserServiceImplTest {
     void getUser_shouldThrowNotFound_whenUserDoesNotExist(){
         User user = buildUser("joao");
 
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
 
@@ -200,13 +176,14 @@ class UserServiceImplTest {
     @Test
     void updateUser_shouldReturnUpdatedUserResponse_whenSelfRequest(){
         User user = buildUser("joao");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 
         UserProfileUpdateRequest request = new UserProfileUpdateRequest(
                 "nova-foto.jpg",
+                "Bios sarada",
                 LocalDate.of(1999, 1, 1)
         );
 
@@ -219,7 +196,7 @@ class UserServiceImplTest {
     @Test
     void updateUser_shouldReturnUpdatedUserResponse_whenRequesterIsAdmin(){
         User admin = buildAdmin("admin");
-        this.mockAuthenticatedUser(admin);
+        mockAuthenticatedUser(admin);
 
         User user = buildUser("joao");
 
@@ -228,6 +205,7 @@ class UserServiceImplTest {
 
         UserProfileUpdateRequest request = new UserProfileUpdateRequest(
                 "nova-foto.jpg",
+                "Bios sarada",
                 LocalDate.of(1999, 1, 1)
         );
 
@@ -240,10 +218,11 @@ class UserServiceImplTest {
     @Test
     void updateUser_shouldThrowForbidden_whenNotSelfOrAdmin(){
         User user = buildUser("pedro");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         UserProfileUpdateRequest request = new UserProfileUpdateRequest(
                 "nova-foto.jpg",
+                "Bios sarada",
                 LocalDate.of(1999, 1, 1)
         );
 
@@ -256,12 +235,13 @@ class UserServiceImplTest {
     @Test
     void updateUser_shouldThrowNotFound_whenUserDoesNotExist(){
         User user = buildUser("joao");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
 
         UserProfileUpdateRequest request = new UserProfileUpdateRequest(
                 "nova-foto.jpg",
+                "Bios sarada",
                 LocalDate.of(1999, 1, 1)
         );
 
@@ -274,7 +254,7 @@ class UserServiceImplTest {
     @Test
     void softDeleteUser_shouldMarkUserAsDeleted_whenSelfRequest(){
         User user = buildUser("joao");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
 
@@ -287,7 +267,7 @@ class UserServiceImplTest {
     @Test
     void softDeleteUser_shouldMarkUserAsDeleted_whenRequesterIsAdmin(){
         User admin = buildAdmin("admin");
-        this.mockAuthenticatedUser(admin);
+        mockAuthenticatedUser(admin);
 
         User user = buildUser("joao");
 
@@ -302,7 +282,7 @@ class UserServiceImplTest {
     @Test
     void softDeleteUser_shouldThrowForbidden_whenNotSelfOrAdmin(){
         User user = buildUser("pedro");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         assertThrows(CustomForbiddenActionException.class,
                 ()-> userService.softDeleteUser("joao"));
@@ -313,7 +293,7 @@ class UserServiceImplTest {
     @Test
     void softDeleteUser_shouldThrowNotFound_whenUserDoesNotExist(){
         User user = buildUser("joao");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
 
@@ -327,7 +307,7 @@ class UserServiceImplTest {
     void updatePassword_shouldUpdatePassword_whenRequestIsValid(){
         User user = buildUser("joao");
 
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
 
@@ -346,7 +326,7 @@ class UserServiceImplTest {
     @Test
     void updatePassword_shouldThrowForbidden_whenNotSelfRequest(){
         User user = buildUser("pedro");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         UserPasswordUpdateRequest request = new UserPasswordUpdateRequest(
                 "senha123",
@@ -363,7 +343,7 @@ class UserServiceImplTest {
     @Test
     void updatePassword_shouldThrowBadRequest_whenCurrentPasswordIsInvalid(){
         User user = buildUser("joao");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
 
@@ -382,7 +362,7 @@ class UserServiceImplTest {
     @Test
     void updatePassword_shouldThrowBadRequest_whenNewPasswordsDontMatch(){
         User user = buildUser("joao");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
 
@@ -401,7 +381,7 @@ class UserServiceImplTest {
     @Test
     void updatePassword_shouldThrowBadRequest_whenNewPasswordIsSameAsOld(){
         User user = buildUser("joao");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
 
@@ -422,7 +402,7 @@ class UserServiceImplTest {
     @Test
     void requestEmailChange_shouldSendConfirmation_whenUserIsVerified(){
         User user = buildUser("joao");
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
 
@@ -438,7 +418,7 @@ class UserServiceImplTest {
         User user = buildUser("joao");
         user.setVerified(false);
 
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
 
@@ -454,7 +434,7 @@ class UserServiceImplTest {
     void requestEmailChange_shouldThrowNotFound_whenUserDoesNotExist(){
         User user = buildUser("joao");
 
-        this.mockAuthenticatedUser(user);
+        mockAuthenticatedUser(user);
 
         when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
 
