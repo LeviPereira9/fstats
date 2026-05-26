@@ -6,6 +6,7 @@ import lp.edu.fstats.security.jwt.JwtFilter;
 import lp.edu.fstats.util.AuthUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -51,7 +52,10 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(AuthUtil.PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers("/api/v1/competition/code").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/competition/code")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/competition/code")
+                        .hasRole("ADMIN")
                         .requestMatchers("/api/v1/auto").hasRole("SUPER_ADMIN")
                         .anyRequest().authenticated()
                 )
