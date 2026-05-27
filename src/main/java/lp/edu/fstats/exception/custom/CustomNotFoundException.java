@@ -36,4 +36,8 @@ public class CustomNotFoundException extends RuntimeException {
     public static CustomNotFoundException standings() {
         return new CustomNotFoundException("Classificação não encontrada. Solicite um novo envio.");
     }
+
+    public static CustomNotFoundException favorite(){
+        return new CustomNotFoundException("Favorito não encontrado.");
+    }
 }

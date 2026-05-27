@@ -22,4 +22,8 @@ public class CustomDuplicateFieldException extends RuntimeException {
     public static CustomDuplicateFieldException code() {
         return new CustomDuplicateFieldException("code", "Esse código já existe.");
     }
+
+    public static CustomDuplicateFieldException favorite(){
+        return new CustomDuplicateFieldException("favorite", "Você já adicionou esta competição aos favoritos");
+    }
 }
