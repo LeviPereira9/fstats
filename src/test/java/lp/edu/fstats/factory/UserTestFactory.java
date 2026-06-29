@@ -34,4 +34,12 @@ public class UserTestFactory {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
+    public static User buildMockAuthenticatedUser(String username){
+        User user = buildUser(username);
+
+        mockAuthenticatedUser(user);
+
+        return user;
+    }
+
 }
