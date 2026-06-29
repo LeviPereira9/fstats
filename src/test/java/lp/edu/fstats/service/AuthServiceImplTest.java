@@ -81,7 +81,6 @@ public class AuthServiceImplTest {
         AuthResponse response = authService.register(request);
 
         assertNotNull(response);
-        assertTrue(response.token().startsWith("Bearer "));
 
         verify(userRepository).save(any(User.class));
 
@@ -153,7 +152,6 @@ public class AuthServiceImplTest {
         AuthResponse response = authService.login(request);
 
         assertNotNull(response);
-        assertTrue(response.token().startsWith("Bearer "));
         verify(authenticationManager).authenticate(any());
         verify(jwtTokenService).generateToken(user);
     }

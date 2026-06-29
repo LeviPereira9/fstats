@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
 
         user = userRepository.save(user);
 
-        String token = "Bearer " + jwtTokenService.generateToken(user);
+        String token = jwtTokenService.generateToken(user);
 
         verificationService.sendConfirmationEmail(user, TokenType.CONFIRMATION);
 
@@ -74,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
 
         Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-        String token = "Bearer " + jwtTokenService.generateToken((User) auth.getPrincipal());
+        String token = jwtTokenService.generateToken((User) auth.getPrincipal());
 
         return new AuthResponse(token);
     }
