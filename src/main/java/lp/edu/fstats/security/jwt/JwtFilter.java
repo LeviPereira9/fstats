@@ -3,9 +3,11 @@ package lp.edu.fstats.security.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lp.edu.fstats.exception.custom.CustomForbiddenActionException;
 import lp.edu.fstats.exception.custom.CustomInternalServerError;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.model.user.User;
@@ -53,8 +55,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
 
-        } catch (CustomNotFoundException e) {
-            this.generateErrorResponse(response, "Error.NotFound", 404, "Dono do Token não encontrado.", null);
+        } catch (CustomForbiddenActionException e) {
+            this.generateErrorResponse(response, "Error.Unauthorized", 401, "Usuário não autenticado.", null);
 
         } catch (CustomInternalServerError e) {
             this.generateErrorResponse(response, "Error.InternalServer", 503, e.getMessage(), null);
@@ -65,13 +67,16 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String recoverToken(HttpServletRequest request) {
-        String auth = request.getHeader("Authorization");
 
-        if (auth == null || !auth.startsWith("Bearer ")) {
-            throw CustomNotFoundException.jwtToken();
+        if(request.getCookies() != null){
+            for(Cookie cookie : request.getCookies()){
+                if("access_token".equals(cookie.getName())){
+                    return cookie.getValue();
+                }
+            }
         }
 
-        return auth.replace("Bearer ", "");
+        throw CustomForbiddenActionException.notAuthorized();
     }
 
     private void generateErrorResponse(HttpServletResponse responseSender, String operation, int code, String message, Map<String, String> fieldErrors) throws IOException {
