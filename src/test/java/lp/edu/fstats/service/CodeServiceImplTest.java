@@ -3,6 +3,7 @@ import lp.edu.fstats.dto.code.CodeRequest;
 import lp.edu.fstats.dto.code.CodeResponse;
 import lp.edu.fstats.dto.code.CodesResponse;
 import lp.edu.fstats.exception.custom.CustomDuplicateFieldException;
+import lp.edu.fstats.factory.CodeTestFactory;
 import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.repository.code.CodeRepository;
 import lp.edu.fstats.service.code.CodeServiceImpl;
@@ -28,23 +29,15 @@ public class CodeServiceImplTest {
     @InjectMocks
     private CodeServiceImpl codeService;
 
-    //Helpers
-    private Code buildCode(Integer id, String code, String name){
-        Code c = new Code();
-        c.setId(id);
-        c.setCode(code);
-        c.setName(name);
 
-        return c;
-    }
 
     //getAllCodes
 
     @Test
     void getAllCodes_shouldReturnAllCodes_whenCodesExist(){
         List<Code> codes = List.of(
-                this.buildCode(1,"PL", "Premier League"),
-                this.buildCode(2, "BL1", "BundesLiga")
+                CodeTestFactory.buildCode(1,"PL", "Premier League"),
+                CodeTestFactory.buildCode(2, "BL1", "BundesLiga")
         );
 
         when(codeRepository.findAll()).thenReturn(codes);
@@ -63,7 +56,7 @@ public class CodeServiceImplTest {
     @Test
     void createCode_shouldReturnCodeResponse_whenCodeDoesNotExist(){
         CodeRequest request = new CodeRequest("PL", "Premier League");
-        Code savedCode = this.buildCode(1, "PL", null);
+        Code savedCode = CodeTestFactory.buildCode(1, "PL", null);
 
         when(codeRepository.existsByCode("PL")).thenReturn(false);
 
