@@ -10,7 +10,7 @@ import lp.edu.fstats.model.probability.Probability;
 import lp.edu.fstats.repository.competition.CompetitionRepository;
 import lp.edu.fstats.repository.match.MatchRepository;
 import lp.edu.fstats.repository.probability.ProbabilityRepository;
-import lp.edu.fstats.service.poisson.PoissonService;
+import lp.edu.fstats.service.poisson.PoissonServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,7 +25,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
     private final MatchRepository matchRepository;
     private final ProbabilityRepository probabilityRepository;
     private final CompetitionRepository competitionRepository;
-    private final PoissonService poissonService;
+    private final PoissonServiceImpl poissonService;
 
 
     //TODO: Melhorar nomeação
