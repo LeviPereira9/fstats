@@ -17,7 +17,7 @@ public record AverageResponse(
                 source.getAvgGoalsForHome().multiply(BigDecimal.valueOf(100)),
                 source.getAvgGoalsAgainstHome().multiply(BigDecimal.valueOf(100)),
                 source.getAvgGoalsForAway().multiply(BigDecimal.valueOf(100)),
-                source.getAvgGoalsForAway().multiply(BigDecimal.valueOf(100))
+                source.getAvgGoalsAgainstAway().multiply(BigDecimal.valueOf(100))
         );
     }
 }
