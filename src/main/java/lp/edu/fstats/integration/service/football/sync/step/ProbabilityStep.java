@@ -9,6 +9,7 @@ import lp.edu.fstats.model.probability.Probability;
 import lp.edu.fstats.repository.match.MatchRepository;
 import lp.edu.fstats.repository.probability.ProbabilityRepository;
 import lp.edu.fstats.service.poisson.PoissonService;
+import lp.edu.fstats.service.poisson.PoissonServiceImpl;
 import lp.edu.fstats.service.probability.ProbabilityService;
 import lp.edu.fstats.integration.service.football.sync.context.CompetitionSyncContext;
 import org.springframework.stereotype.Service;
