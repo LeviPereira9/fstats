@@ -33,7 +33,7 @@ public class JwtTokenService {
                     .withExpiresAt(ExpirationUtil.defaultJwtExpirationTime())
                     .withClaim("jwtVersion", jwtVersion)
                     .sign(algorithm);
-        } catch (JWTCreationException e) {
+        } catch (Exception e) {
             throw CustomInternalServerError.tokenCreation();
         }
     }
