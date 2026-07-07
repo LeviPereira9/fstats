@@ -3,7 +3,7 @@ import lp.edu.fstats.dto.code.CodeRequest;
 import lp.edu.fstats.dto.code.CodeResponse;
 import lp.edu.fstats.dto.code.CodesResponse;
 import lp.edu.fstats.exception.custom.CustomDuplicateFieldException;
-import lp.edu.fstats.factory.CodeTestFactory;
+import lp.edu.fstats.factory.entity.CodeTestFactory;
 import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.repository.code.CodeRepository;
 import lp.edu.fstats.service.code.CodeServiceImpl;

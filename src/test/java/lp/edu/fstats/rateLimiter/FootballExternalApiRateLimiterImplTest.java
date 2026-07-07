@@ -1,4 +1,4 @@
-package lp.edu.fstats.integration.RateLimiter;
+package lp.edu.fstats.rateLimiter;
 
 import lp.edu.fstats.integration.service.rateLimiter.FootballExternalApiRateLimiter;
 import lp.edu.fstats.integration.service.rateLimiter.Sleeper;

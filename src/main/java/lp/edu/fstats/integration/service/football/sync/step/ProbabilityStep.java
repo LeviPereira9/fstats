@@ -91,6 +91,8 @@ public class ProbabilityStep {
             probabilitiesToSave.add(probability);
         }
 
+        probabilityService.saveAll(probabilitiesToSave);
+
         if(startCount <= competition.getApiCurrentMatchDay()){
             this.sync(
                     competition,
@@ -99,6 +101,5 @@ public class ProbabilityStep {
             );
         }
 
-        probabilityService.saveAll(probabilitiesToSave);
     }
 }

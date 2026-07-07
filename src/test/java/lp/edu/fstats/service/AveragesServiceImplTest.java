@@ -2,8 +2,10 @@ package lp.edu.fstats.service;
 
 import lp.edu.fstats.dto.averages.AverageResponse;
 import lp.edu.fstats.dto.averages.AveragesResponse;
-import lp.edu.fstats.factory.TeamTestFactory;
+import lp.edu.fstats.factory.entity.AveragesTestFactory;
+import lp.edu.fstats.factory.entity.TeamTestFactory;
 import lp.edu.fstats.model.avarages.Averages;
+import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.model.team.Team;
 import lp.edu.fstats.repository.averages.AveragesRepository;
 import lp.edu.fstats.service.averages.AveragesServiceImpl;
@@ -35,16 +37,7 @@ public class AveragesServiceImplTest {
     }
 
     private Averages buildAverages(Team team){
-        Averages averages = new Averages();
-        averages.setId(1L);
-        averages.setTeam(team);
-
-        averages.setAvgGoalsForHome(BigDecimal.valueOf(1.5));
-        averages.setAvgGoalsAgainstHome(BigDecimal.valueOf(0.8));
-        averages.setAvgGoalsForAway(BigDecimal.valueOf(1.1));
-        averages.setAvgGoalsAgainstAway(BigDecimal.valueOf(1.3));
-
-        return averages;
+        return AveragesTestFactory.buildAverages(team, new Competition());
     }
 
     //findAllByCompetitionId

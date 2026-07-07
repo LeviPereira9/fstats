@@ -2,7 +2,7 @@ package lp.edu.fstats.service;
 
 import lp.edu.fstats.dto.standings.StandingsResponse;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
-import lp.edu.fstats.factory.TeamTestFactory;
+import lp.edu.fstats.factory.entity.TeamTestFactory;
 import lp.edu.fstats.model.standings.Standings;
 import lp.edu.fstats.model.team.Team;
 import lp.edu.fstats.repository.standings.StandingsRepository;

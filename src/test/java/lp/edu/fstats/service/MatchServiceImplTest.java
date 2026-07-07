@@ -3,8 +3,10 @@ package lp.edu.fstats.service;
 import lp.edu.fstats.dto.match.MatchResponse;
 import lp.edu.fstats.dto.match.MatchesResponse;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
-import lp.edu.fstats.factory.ProbabilityTestFactory;
-import lp.edu.fstats.factory.TeamTestFactory;
+import lp.edu.fstats.factory.entity.MatchTestFactory;
+import lp.edu.fstats.factory.entity.ProbabilityTestFactory;
+import lp.edu.fstats.factory.entity.TeamTestFactory;
+import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.model.match.Match;
 import lp.edu.fstats.model.probability.Probability;
 import lp.edu.fstats.model.team.Team;
@@ -36,25 +38,11 @@ public class MatchServiceImplTest {
     private MatchServiceImpl matchService;
 
     //helpers
-    private Match buildMatch(Long id, Long externalId, Team home, Team away, Integer matchDay){
-        Match match = new Match();
-        match.setId(id);
-        match.setExternalId(externalId);
-        match.setHomeTeam(home);
-        match.setAwayTeam(away);
-        match.setHomeGoals(2);
-        match.setAwayGoals(1);
-        match.setStatus("FINISHED");
-        match.setMatchDay(matchDay);
-        match.setUtcDate(LocalDateTime.of(2024, 5, 1, 16, 0));
-
-        return match;
+    private Match buildMatch(Long id, Long externalId, Team home, Team away, int matchDay){
+        return MatchTestFactory.buildMatch(id, externalId, home, away, matchDay, new Competition());
     }
 
-    private Team buildTeam(Long id, String name){
-        return TeamTestFactory.buildTeam(id,10L, name);
-    }
-
+    //Helpers
     private Probability buildProbability(Match match){
         return ProbabilityTestFactory.buildProbability(
                 BigDecimal.valueOf(0.80),
@@ -65,8 +53,8 @@ public class MatchServiceImplTest {
     //findAllByExternalId
     @Test
     void findAllByExternalId_shouldReturnMapKeyedByExternalId_whenMatchesExist(){
-        Team home = this.buildTeam(1L,"Arsenal");
-        Team away = this.buildTeam(2L,"Chelsea");
+        Team home = TeamTestFactory.buildTeam(1L, 50L,"Arsenal");
+        Team away = TeamTestFactory.buildTeam(2L, 50L,"Chelsea");
 
         Match match = this.buildMatch(1L, 500L, home, away, 1);
 
@@ -96,8 +84,8 @@ public class MatchServiceImplTest {
     // getMatches
     @Test
     void getMatches_shouldReturnMatchesResponse_whenMatchesExistWithProbability(){
-        Team home = this.buildTeam(1L,"Arsenal");
-        Team away = this.buildTeam(2L,"Chelsea");
+        Team home = TeamTestFactory.buildTeam(1L, 50L,"Arsenal");
+        Team away = TeamTestFactory.buildTeam(2L, 50L,"Chelsea");
 
         Match match = this.buildMatch(1L, 500L, home, away, 1);
 
@@ -120,8 +108,8 @@ public class MatchServiceImplTest {
 
     @Test
     void getMatches_shouldReturnMatchesResponse_whenMatchHasNoProbability(){
-        Team home = this.buildTeam(1L, "Arsenal");
-        Team away = this.buildTeam(2L, "Chelsea");
+        Team home = TeamTestFactory.buildTeam(1L, 50L, "Arsenal");
+        Team away = TeamTestFactory.buildTeam(2L, 50L, "Chelsea");
         Match match = this.buildMatch(1L, 500L, home, away, 1);
 
         //sem probability
@@ -147,8 +135,8 @@ public class MatchServiceImplTest {
     //saveAll
     @Test
     void saveAll_shouldCallRepositorySaveAll_withGivenMatches(){
-        Team home = this.buildTeam(1L,"Arsenal");
-        Team away = this.buildTeam(2L,"Chelsea");
+        Team home = TeamTestFactory.buildTeam(1L, 50L,"Arsenal");
+        Team away = TeamTestFactory.buildTeam(2L, 50L,"Chelsea");
         Match match = this.buildMatch(1L, 500L, home, away, 1);
 
         List<Match> matches = List.of(match);

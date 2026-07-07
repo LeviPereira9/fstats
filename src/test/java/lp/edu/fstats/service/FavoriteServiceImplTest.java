@@ -6,8 +6,8 @@ import lp.edu.fstats.dto.favorites.FavoritesResponse;
 import lp.edu.fstats.exception.custom.CustomDuplicateFieldException;
 import lp.edu.fstats.exception.custom.CustomForbiddenActionException;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
-import lp.edu.fstats.factory.CodeTestFactory;
-import lp.edu.fstats.factory.UserTestFactory;
+import lp.edu.fstats.factory.entity.CodeTestFactory;
+import lp.edu.fstats.factory.entity.UserTestFactory;
 import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.model.favorites.Favorite;
 import lp.edu.fstats.model.user.User;
@@ -25,8 +25,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

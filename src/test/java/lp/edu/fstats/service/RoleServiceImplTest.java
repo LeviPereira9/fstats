@@ -1,7 +1,7 @@
 package lp.edu.fstats.service;
 
 import lp.edu.fstats.dto.user.RoleResponse;
-import static lp.edu.fstats.factory.UserTestFactory.*;
+import static lp.edu.fstats.factory.entity.UserTestFactory.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

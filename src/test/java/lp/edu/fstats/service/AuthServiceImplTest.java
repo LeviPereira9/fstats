@@ -23,7 +23,7 @@ import org.springframework.security.core.Authentication;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static lp.edu.fstats.factory.UserTestFactory.*;
+import static lp.edu.fstats.factory.entity.UserTestFactory.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

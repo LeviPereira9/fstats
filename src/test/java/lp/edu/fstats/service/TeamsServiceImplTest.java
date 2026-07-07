@@ -1,30 +1,22 @@
 package lp.edu.fstats.service;
 
 
-import lp.edu.fstats.factory.TeamTestFactory;
-import org.junit.jupiter.api.AfterEach;
+import lp.edu.fstats.factory.entity.TeamTestFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import lp.edu.fstats.model.team.Team;
 import lp.edu.fstats.repository.team.TeamRepository;
 import lp.edu.fstats.service.team.TeamServiceImpl;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package lp.edu.fstats.factory;
+package lp.edu.fstats.factory.entity;
 
 import lp.edu.fstats.model.user.Role;
 import lp.edu.fstats.model.user.User;

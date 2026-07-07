@@ -9,7 +9,7 @@ import lp.edu.fstats.repository.user.UserRepository;
 import lp.edu.fstats.response.page.PageResponse;
 import lp.edu.fstats.service.user.UserServiceImpl;
 import lp.edu.fstats.service.verification.VerificationService;
-import static lp.edu.fstats.factory.UserTestFactory.*;
+import static lp.edu.fstats.factory.entity.UserTestFactory.*;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,7 @@ package lp.edu.fstats.service;
 import lp.edu.fstats.dto.verification.VerificationPasswordResetRequest;
 import lp.edu.fstats.exception.custom.CustomBadRequestException;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
-import lp.edu.fstats.factory.UserTestFactory;
+import lp.edu.fstats.factory.entity.UserTestFactory;
 import lp.edu.fstats.model.user.User;
 import lp.edu.fstats.model.verification.TokenType;
 import lp.edu.fstats.model.verification.VerificationToken;

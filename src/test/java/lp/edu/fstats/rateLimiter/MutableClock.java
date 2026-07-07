@@ -1,4 +1,4 @@
-package lp.edu.fstats.integration.RateLimiter;
+package lp.edu.fstats.rateLimiter;
 
 import java.time.Clock;
 import java.time.Duration;

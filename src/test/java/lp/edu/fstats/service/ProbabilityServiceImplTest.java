@@ -1,6 +1,6 @@
 package lp.edu.fstats.service;
 
-import lp.edu.fstats.factory.ProbabilityTestFactory;
+import lp.edu.fstats.factory.entity.ProbabilityTestFactory;
 import lp.edu.fstats.model.probability.Probability;
 import lp.edu.fstats.repository.probability.ProbabilityRepository;
 import lp.edu.fstats.service.probability.ProbabilityServiceImpl;

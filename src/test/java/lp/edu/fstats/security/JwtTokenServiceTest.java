@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lp.edu.fstats.exception.custom.CustomInternalServerError;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
-import lp.edu.fstats.factory.UserTestFactory;
+import lp.edu.fstats.factory.entity.UserTestFactory;
 import lp.edu.fstats.model.user.User;
 import lp.edu.fstats.security.jwt.dto.TokenPayload;
 import lp.edu.fstats.security.jwt.service.AuthorizationService;
@@ -24,9 +24,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
