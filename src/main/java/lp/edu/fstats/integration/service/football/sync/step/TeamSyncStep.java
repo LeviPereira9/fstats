@@ -59,7 +59,7 @@ public class TeamSyncStep {
 
             List<Team> teamsSaved = teamRepository.saveAll(teamsToSave);
 
-            for(Team team: teamsToSave){
+            for(Team team: teamsSaved){
                 CompetitionTeam competitionTeam = new CompetitionTeam();
                 competitionTeam.setTeam(team);
                 competitionTeam.setCompetition(csc.getCompetition());
