@@ -19,6 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.management.RuntimeErrorException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Year;
@@ -26,6 +28,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -228,5 +232,139 @@ public class ExternalSyncOrchestratorTest {
         verifyNoInteractions(standingsSyncStep);
         verifyNoInteractions(averagesStep);
         verifyNoInteractions(probabilityStep);
+    }
+
+    //Locks
+    @Test
+    void syncCompetition_shouldThrowException_whenLockAlreadyHeldForSameCode() throws InterruptedException{
+        Competition competition = CompetitionTestFactory.buildCompetition("PL");
+
+        CompetitionSyncContext csc = SyncContextTestFactory.buildCsc(competition);
+
+        TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
+
+        StandingsSyncContext ssc = SyncContextTestFactory.buildSsc(List.of(), List.of());
+
+        CountDownLatch firstCallHoldingLock = new CountDownLatch(1);
+        CountDownLatch releaseFirstCall = new CountDownLatch(1);
+
+        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+                .thenReturn(csc);
+
+        when(teamSyncStep.sync(csc))
+                .thenAnswer( invocation -> {
+                    // sinaliza que já entrou no sync e está segurando o lock
+                    firstCallHoldingLock.countDown();
+                    releaseFirstCall.await();
+                    return tsc;
+                });
+
+        when(standingsSyncStep.sync(csc, tsc))
+                .thenReturn(ssc);
+
+        Thread firstThread = new Thread(() -> {
+            externalSyncOrchestrator.syncCompetition("PL");
+        });
+
+        firstThread.start();
+
+        boolean reachedLockedSection = firstCallHoldingLock.await(2, TimeUnit.SECONDS);
+
+        assertTrue(reachedLockedSection);
+
+        // segunda chamada, mesma competição, lock já está preso na thread acima
+        assertThrows(RuntimeException.class,
+                ()-> externalSyncOrchestrator.syncCompetition("PL"));
+
+        releaseFirstCall.countDown();
+        firstThread.join(2000);
+
+        //só a primeira chamada realmente completou o fluxo
+        verify(competitionSyncStep, times(1))
+                .sync(eq("PL"), any(Year.class));
+
+        verify(matchSyncStep, times(1)).sync(csc, tsc);
+    }
+
+    @Test
+    void syncCompetition_shouldNotBlock_whenCodesAreDifferente(){
+
+        Competition cPL = CompetitionTestFactory.buildCompetition("PL");
+        Competition cBL1 = CompetitionTestFactory.buildCompetition("BL1");
+
+        CompetitionSyncContext plCsc = SyncContextTestFactory.buildCsc(cPL);
+        CompetitionSyncContext bl1Csc = SyncContextTestFactory.buildCsc(cBL1);
+
+        TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
+        StandingsSyncContext ssc = SyncContextTestFactory.buildSsc(List.of(), List.of());
+
+        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+                .thenReturn(plCsc);
+        when(competitionSyncStep.sync(eq("BL1"), any(Year.class)))
+                .thenReturn(bl1Csc);
+
+        when(teamSyncStep.sync(any(CompetitionSyncContext.class)))
+                .thenReturn(tsc);
+
+        when(standingsSyncStep.sync(any(CompetitionSyncContext.class), any(TeamSyncContext.class)))
+                .thenReturn(ssc);
+
+        assertDoesNotThrow(()->{
+            externalSyncOrchestrator.syncCompetition("PL");
+            externalSyncOrchestrator.syncCompetition("BL1");
+        });
+
+        verify(competitionSyncStep).sync(eq("PL"), any(Year.class));
+        verify(competitionSyncStep).sync(eq("BL1"), any(Year.class));
+
+    }
+
+    @Test
+    void syncCompetition_shouldAllowNewSync_afterPreviousLockWasReleased(){
+        Competition competition = CompetitionTestFactory.buildCompetition("PL");
+        CompetitionSyncContext csc = SyncContextTestFactory.buildCsc(competition);
+        TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
+        StandingsSyncContext ssc = SyncContextTestFactory.buildSsc(List.of(), List.of());
+
+        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+                .thenReturn(csc);
+        when(teamSyncStep.sync(csc))
+                .thenReturn(tsc);
+        when(standingsSyncStep.sync(csc, tsc))
+                .thenReturn(ssc);
+
+        // primeira chamada completa normalmente e libera o lock ao final
+        externalSyncOrchestrator.syncCompetition("PL");
+
+        //segunda chamada, mesmo código, lock ja foi liberado e não deve lançar
+        assertDoesNotThrow(() -> externalSyncOrchestrator.syncCompetition("PL"));
+
+        verify(competitionSyncStep, times(2))
+                .sync(eq("PL"), any(Year.class));
+    }
+
+    @Test
+    void syncCompetition_shouldReleaseLock_evenWhenSyncFails(){
+        Competition competition = CompetitionTestFactory.buildCompetition("PL");
+        CompetitionSyncContext csc = SyncContextTestFactory.buildCsc(competition);
+
+        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+                .thenReturn(csc);
+        when(teamSyncStep.sync(csc)).thenThrow(new RuntimeException("API indisponível"));
+
+        //primeira falhou
+        assertThrows(RuntimeException.class,()-> externalSyncOrchestrator.syncCompetition("PL"));
+
+        // reset para simular uma nova tentativa
+        reset(teamSyncStep);
+        TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
+
+        when(teamSyncStep.sync(csc))
+                .thenReturn(tsc);
+        when(standingsSyncStep.sync(csc, tsc))
+                .thenReturn(SyncContextTestFactory.buildSsc(List.of(), List.of()));
+
+        //se o lock nao foi liberado, essa chamda lança lock acquired
+        assertDoesNotThrow(() -> sexternalSyncOrchestrator.syncCompetition("PL"));
     }
 }
