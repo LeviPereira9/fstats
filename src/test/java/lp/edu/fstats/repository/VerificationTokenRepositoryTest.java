@@ -1,5 +1,6 @@
 package lp.edu.fstats.repository;
 
+import lp.edu.fstats.container.RepositoryTestBase;
 import lp.edu.fstats.model.user.Role;
 import lp.edu.fstats.model.user.User;
 import lp.edu.fstats.model.verification.TokenType;
