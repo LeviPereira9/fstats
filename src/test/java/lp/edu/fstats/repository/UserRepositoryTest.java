@@ -1,5 +1,6 @@
 package lp.edu.fstats.repository;
 
+import lp.edu.fstats.container.RepositoryTestBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

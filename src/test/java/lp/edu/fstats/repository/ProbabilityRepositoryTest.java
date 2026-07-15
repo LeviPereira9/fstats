@@ -1,5 +1,6 @@
 package lp.edu.fstats.repository;
 
+import lp.edu.fstats.container.RepositoryTestBase;
 import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.model.match.Match;
 import lp.edu.fstats.model.probability.Probability;
