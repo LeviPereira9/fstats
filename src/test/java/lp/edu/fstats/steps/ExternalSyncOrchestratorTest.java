@@ -364,7 +364,7 @@ public class ExternalSyncOrchestratorTest {
         when(standingsSyncStep.sync(csc, tsc))
                 .thenReturn(SyncContextTestFactory.buildSsc(List.of(), List.of()));
 
-        //se o lock nao foi liberado, essa chamda lança lock acquired
-        assertDoesNotThrow(() -> sexternalSyncOrchestrator.syncCompetition("PL"));
+        //se o lock nao foi liberado, essa chamada lança lock acquired
+        assertDoesNotThrow(() -> externalSyncOrchestrator.syncCompetition("PL"));
     }
 }
