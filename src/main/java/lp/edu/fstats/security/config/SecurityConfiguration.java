@@ -1,7 +1,8 @@
 package lp.edu.fstats.security.config;
 
 import lombok.RequiredArgsConstructor;
-import lp.edu.fstats.security.exception.SecurityExceptionHandler;
+import lp.edu.fstats.security.exception.AccessDeniedExceptionHandler;
+import lp.edu.fstats.security.exception.AuthenticationExceptionHandler;
 import lp.edu.fstats.security.jwt.JwtFilter;
 import lp.edu.fstats.util.AuthUtil;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +31,7 @@ public class SecurityConfiguration {
 
 
     public static final String SECURITY = "bearerAuth";
-    private final SecurityExceptionHandler securityExceptionHandler;
+    private final AuthenticationExceptionHandler authenticationExceptionHandler;
 
     private final JwtFilter jwtFilter;
 
@@ -45,7 +46,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, AccessDeniedExceptionHandler accessDeniedExceptionHandler) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
@@ -60,7 +61,8 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(handling -> handling
-                        .authenticationEntryPoint(securityExceptionHandler))
+                        .authenticationEntryPoint(authenticationExceptionHandler)
+                        .accessDeniedHandler(accessDeniedExceptionHandler))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
