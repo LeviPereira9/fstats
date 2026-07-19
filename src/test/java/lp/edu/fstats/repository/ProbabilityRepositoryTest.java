@@ -1,6 +1,6 @@
 package lp.edu.fstats.repository;
 
-import lp.edu.fstats.container.RepositoryTestBase;
+import lp.edu.fstats.base.RepositoryTestBase;
 import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.model.match.Match;
 import lp.edu.fstats.model.probability.Probability;
@@ -9,26 +9,16 @@ import lp.edu.fstats.repository.competition.CompetitionRepository;
 import lp.edu.fstats.repository.match.MatchRepository;
 import lp.edu.fstats.repository.probability.ProbabilityRepository;
 import lp.edu.fstats.repository.team.TeamRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

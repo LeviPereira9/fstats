@@ -1,31 +1,20 @@
 package lp.edu.fstats.repository;
 
-import lp.edu.fstats.container.RepositoryTestBase;
-import org.junit.jupiter.api.AfterEach;
+import lp.edu.fstats.base.RepositoryTestBase;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.repository.competition.CompetitionRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 public class CompetitionRepositoryTest extends RepositoryTestBase {
 
