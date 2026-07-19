@@ -1,31 +1,22 @@
 package lp.edu.fstats.repository;
 
-import lp.edu.fstats.container.RepositoryTestBase;
+import lp.edu.fstats.base.RepositoryTestBase;
 import lp.edu.fstats.model.user.Role;
 import lp.edu.fstats.model.user.User;
 import lp.edu.fstats.model.verification.TokenType;
 import lp.edu.fstats.model.verification.VerificationToken;
 import lp.edu.fstats.repository.user.UserRepository;
 import lp.edu.fstats.repository.verification.VerificationTokenRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 public class VerificationTokenRepositoryTest extends RepositoryTestBase {
 
