@@ -57,7 +57,7 @@ public class SecurityConfiguration {
                         .hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/competition/code")
                         .hasRole("ADMIN")
-                        .requestMatchers("/api/v1/auto").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/v1/auto/**").hasRole("SUPER_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(handling -> handling
