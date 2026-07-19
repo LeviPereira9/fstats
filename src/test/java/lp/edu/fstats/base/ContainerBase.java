@@ -1,0 +1,42 @@
+package lp.edu.fstats.base;
+
+import com.redis.testcontainers.RedisContainer;
+import org.junit.jupiter.api.BeforeAll;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
+
+public class ContainerBase {
+
+    static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0");
+
+    static RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:7-alpine"));
+
+    static {
+        mysql.start();
+        redis.start();
+    }
+
+    @DynamicPropertySource
+    static void overrideProps(DynamicPropertyRegistry registry) {
+
+        //MySQL
+        registry.add("spring.datasource.url", mysql::getJdbcUrl);
+        registry.add("spring.datasource.username", mysql::getUsername);
+        registry.add("spring.datasource.password", mysql::getPassword);
+
+        //Redis
+        registry.add("spring.data.redis.host", redis::getHost);
+        registry.add("spring.data.redis.port",
+                () -> redis.getMappedPort(6379));
+    }
+
+    @BeforeAll
+    static void beforeAll() {
+        System.out.println(mysql.getContainerId());
+    }
+
+}
