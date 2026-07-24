@@ -42,7 +42,7 @@ public abstract class IntegrationTestBase extends ContainerBase {
         RestAssured.basePath = "/api/v1";
     }
 
-    @AfterEach
+    @BeforeEach
     void cleanUp(){
         databaseCleaner.truncateAll();
         redisCleaner.clearAll();
