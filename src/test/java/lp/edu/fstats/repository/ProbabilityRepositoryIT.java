@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class ProbabilityRepositoryTest extends RepositoryTestBase {
+public class ProbabilityRepositoryIT extends RepositoryTestBase {
 
     @Autowired
     private ProbabilityRepository probabilityRepository;

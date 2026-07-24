@@ -22,7 +22,11 @@ public class TestDatabaseCleaner {
 
         jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0 ");
 
-        tables.forEach(table -> jdbcTemplate.execute("TRUNCATE TABLE " + table));
+        tables.stream()
+                .filter(table -> !table.equals("flyway_schema_history"))
+                .forEach(table ->
+                        jdbcTemplate.execute("TRUNCATE TABLE " + table)
+                );
 
         jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1 ");
     }

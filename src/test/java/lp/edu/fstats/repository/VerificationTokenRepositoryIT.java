@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 
-public class VerificationTokenRepositoryTest extends RepositoryTestBase {
+public class VerificationTokenRepositoryIT extends RepositoryTestBase {
 
     @Autowired
     private VerificationTokenRepository verificationTokenRepository;

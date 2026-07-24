@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
-public class CompetitionRepositoryTest extends RepositoryTestBase {
+public class CompetitionRepositoryIT extends RepositoryTestBase {
 
     @Autowired
     private CompetitionRepository competitionRepository;

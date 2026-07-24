@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 
-public class UserRepositoryTest extends RepositoryTestBase {
+public class UserRepositoryIT extends RepositoryTestBase {
 
     @Autowired
     private UserRepository userRepository;
