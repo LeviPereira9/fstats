@@ -33,7 +33,7 @@ public class CodeController {
         CodesResponse data = codeService.getAllCodes();
 
         Response<CodesResponse> response = Response.<CodesResponse>builder()
-                .operation("a")
+                .operation("Code.GetAll")
                 .code(HttpStatus.OK.value())
                 .data(data)
                 .message("Competições ativas encontradas com sucesso.")
@@ -51,7 +51,7 @@ public class CodeController {
         int code = HttpStatus.CREATED.value();
 
         Response<CodeResponse> response = Response.<CodeResponse>builder()
-                .operation("b")
+                .operation("Code.Create")
                 .code(code)
                 .data(data)
                 .message("Competição adicionada com sucesso.")
@@ -68,7 +68,7 @@ public class CodeController {
         codeService.deleteCode(competitionId);
 
         Response<Void> response = Response.<Void>builder()
-                .operation("d")
+                .operation("Code.Delete")
                 .code(HttpStatus.OK.value())
                 .message("Competição desativada com sucesso.")
                 .build();
