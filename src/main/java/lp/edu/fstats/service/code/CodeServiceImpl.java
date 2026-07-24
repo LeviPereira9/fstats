@@ -28,7 +28,7 @@ public class CodeServiceImpl implements CodeService {
         return CodesResponse.toResponse(codes);
     }
 
-    @CacheEvict(value = "codes")
+    @CacheEvict(value = "codes", allEntries = true)
     @Override
     public CodeResponse createCode(CodeRequest request) {
         Code code = request.toModel();
@@ -42,7 +42,7 @@ public class CodeServiceImpl implements CodeService {
         return new CodeResponse(codeRepository.save(code));
     }
 
-    @CacheEvict(value = "codes")
+    @CacheEvict(value = "codes", allEntries = true)
     @Override
     public void deleteCode(Integer codeId) {
         codeRepository.deleteById(codeId);
