@@ -55,7 +55,7 @@ public class SecurityConfiguration {
                         .requestMatchers(AuthUtil.PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/competition/code")
                         .hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/competition/code")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/competition/code/**")
                         .hasRole("ADMIN")
                         .requestMatchers("/api/v1/auto/**").hasRole("SUPER_ADMIN")
                         .anyRequest().authenticated()
