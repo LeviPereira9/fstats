@@ -128,7 +128,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void requestEmailChange(String username, UserEmailUpdateRequest request) {
-        AuthUtil.isSelfRequest(username);
+        if(!AuthUtil.isSelfRequest(username)){
+            throw CustomForbiddenActionException.notAuthorized();
+        }
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(CustomNotFoundException::user);
