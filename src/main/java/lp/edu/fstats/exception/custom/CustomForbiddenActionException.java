@@ -16,4 +16,8 @@ public class CustomForbiddenActionException extends RuntimeException {
     public static CustomForbiddenActionException emailNotVerified() {
         return new CustomForbiddenActionException("Ação não permitida. Apenas usuários com e-mails verificados podem realizar esta operação.");
     }
+
+    public static CustomForbiddenActionException tokenValidation(){
+        return new CustomForbiddenActionException("O token de autenticação é inválido ou expirou. Solicite um novo acesso.");
+    }
 }

@@ -56,10 +56,10 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
 
         } catch (CustomForbiddenActionException e) {
-            this.generateErrorResponse(response, "Error.Unauthorized", 401, "Usuário não autenticado.", null);
+            this.generateErrorResponse(response, "Error.ForbiddenAction", 401, "Usuário não autenticado.", null);
 
         } catch (CustomInternalServerError e) {
-            this.generateErrorResponse(response, "Error.InternalServer", 503, e.getMessage(), null);
+            this.generateErrorResponse(response, "Error.ForbiddenAction", 401, e.getMessage(), null);
 
         } finally {
             SecurityContextHolder.clearContext();

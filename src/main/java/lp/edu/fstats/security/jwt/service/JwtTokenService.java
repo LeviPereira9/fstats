@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lp.edu.fstats.exception.custom.CustomForbiddenActionException;
 import lp.edu.fstats.exception.custom.CustomInternalServerError;
 import lp.edu.fstats.model.user.User;
 import lp.edu.fstats.security.jwt.dto.TokenPayload;
@@ -64,7 +65,7 @@ public class JwtTokenService {
         User user = authorizationService.loadUserByUsername(payload.username());
 
         if(!user.getTokenVersion().equals(payload.tokenVersion())) {
-            throw CustomInternalServerError.tokenValidation();
+            throw CustomForbiddenActionException.tokenValidation();
         }
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
