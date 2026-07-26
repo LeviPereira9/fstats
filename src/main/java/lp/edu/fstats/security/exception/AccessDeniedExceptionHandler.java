@@ -29,7 +29,7 @@ public class AccessDeniedExceptionHandler implements AccessDeniedHandler {
         int code = HttpStatus.FORBIDDEN.value();
 
         Response<Void> res = Response.<Void>builder()
-                .operation("Error.AccessDenied")
+                .operation("Error.ForbiddenAction")
                 .message("Você não têm permissão para acessar este recurso.")
                 .code(code)
                 .build();
