@@ -46,6 +46,21 @@ public class AuthTestHelper {
 
     }
 
+    public User notVerifiedUser(String username, String rawPassword){
+        User user = new User();
+        user.setUsername(username);
+        user.setEmail(username + "@test.com");
+
+        user.setPassword(passwordEncoder.encode(rawPassword));
+
+        user.setDateOfBirth(LocalDate.now().minusYears(20));
+
+        user.setRole(Role.USER);
+        user.setVerified(false);
+
+        return userRepository.save(user);
+    }
+
     public Cookie authCookie(User user){
         String token = jwtTokenService.generateToken(user);
 
