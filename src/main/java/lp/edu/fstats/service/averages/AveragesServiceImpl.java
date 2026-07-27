@@ -2,6 +2,7 @@ package lp.edu.fstats.service.averages;
 
 import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.dto.averages.AveragesResponse;
+import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.model.avarages.Averages;
 import lp.edu.fstats.repository.averages.AveragesRepository;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,15 +30,17 @@ public class AveragesServiceImpl implements AveragesService{
     }
 
     @Override
-    //@Cacheable(value = "averages", key = "'competitionId:' + #competitionId")
+    @Cacheable(value = "averages", key = "'competitionId:' + #competitionId")
     public AveragesResponse findAllByCompetition(Long competitionId){
         List<Averages> averages = averagesRepository.findAllByCompetition_Id(competitionId);
+
+        if(averages.isEmpty()) throw CustomNotFoundException.averages();
 
         return AveragesResponse.toResponse(averages);
     }
 
     @Override
-    //@CacheEvict(value = "averages", allEntries = true)
+    @CacheEvict(value = "averages", allEntries = true)
     public void saveAll(List<Averages> averagesToSave) {
         averagesRepository.saveAll(averagesToSave);
     }
