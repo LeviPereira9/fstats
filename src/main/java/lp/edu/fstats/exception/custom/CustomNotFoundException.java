@@ -37,6 +37,10 @@ public class CustomNotFoundException extends RuntimeException {
         return new CustomNotFoundException("Classificação não encontrada. Solicite um novo envio.");
     }
 
+    public static CustomNotFoundException averages(){
+        return new CustomNotFoundException("Médias não encontradas. Solicite um novo envio.");
+    }
+
     public static CustomNotFoundException favorite(){
         return new CustomNotFoundException("Favorito não encontrado.");
     }
