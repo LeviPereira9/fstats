@@ -1,6 +1,7 @@
 package lp.edu.fstats.controller.favorite;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.config.redis.ratelimit.snippets.RateLimit;
 import lp.edu.fstats.dto.code.CodesResponse;
@@ -39,10 +40,11 @@ public class FavoriteController {
         return ResponseEntity.ok(response);
     }
 
+    @RateLimit
     @PutMapping
     public ResponseEntity<Response<Void>> addFavorite(
             @PathVariable("username") String username,
-            @RequestBody FavoriteAddRequest request
+            @RequestBody @Valid FavoriteAddRequest request
             ){
 
         favoriteService.addFavorite(username, request);
@@ -57,10 +59,11 @@ public class FavoriteController {
         return ResponseEntity.status(code).body(response);
     }
 
+    @RateLimit
     @DeleteMapping
     public ResponseEntity<Response<Void>> deleteFavorite(
             @PathVariable("username") String username,
-            @RequestBody FavoriteRemoveRequest request
+            @RequestBody @Valid FavoriteRemoveRequest request
     ){
 
         favoriteService.removeFavorite(username, request);
