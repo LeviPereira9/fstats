@@ -99,7 +99,7 @@ public class CompetitionController {
         StandingsResponse data = standingsService.getStandings(competitionId);
 
         Response<StandingsResponse> response = Response.<StandingsResponse>builder()
-                .operation("")
+                .operation("Competition.Standings.GetStandings")
                 .code(HttpStatus.OK.value())
                 .message("Classificações encontradas com sucesso.")
                 .data(data)

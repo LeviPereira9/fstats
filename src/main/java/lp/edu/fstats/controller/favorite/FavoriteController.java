@@ -30,7 +30,7 @@ public class FavoriteController {
         FavoritesResponse data = favoriteService.getAllFavorites(username);
 
         Response<FavoritesResponse> response = Response.<FavoritesResponse>builder()
-                .operation("a")
+                .operation("Favorites.GetAll")
                 .code(HttpStatus.OK.value())
                 .data(data)
                 .message("Competições favoritas encontradas com sucesso.")
@@ -49,7 +49,7 @@ public class FavoriteController {
         int code = HttpStatus.CREATED.value();
 
         Response<Void> response = Response.<Void>builder()
-                .operation("a")
+                .operation("Favorites.Add")
                 .code(code)
                 .message("Competição adicionada aos favoritos com sucesso.")
                 .build();
@@ -66,7 +66,7 @@ public class FavoriteController {
         favoriteService.removeFavorite(username, request);
 
         Response<Void> response = Response.<Void>builder()
-                .operation("a")
+                .operation("Favorites.Remove")
                 .code(HttpStatus.OK.value())
                 .message("Competição removida dos favoritos com sucesso.")
                 .build();
