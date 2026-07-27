@@ -137,7 +137,7 @@ public class CodeControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void createCode_shouldReturnAccessDenied_whenUserIsNotAdmin(){
+    void createCode_shouldReturnForbiddenAction_whenUserIsNotAdmin(){
         User user = authTestHelper.createDefaultUser("senha12345");
 
         String body = """
@@ -155,7 +155,7 @@ public class CodeControllerIT extends IntegrationTestBase {
                 .post("/competition/code")
         .then()
                 .statusCode(403)
-                .body("operation", equalTo("Error.AccessDenied"));
+                .body("operation", equalTo("Error.ForbiddenAction"));
     }
 
     @Test
@@ -285,7 +285,7 @@ public class CodeControllerIT extends IntegrationTestBase {
                 .delete("/competition/code/1")
         .then()
                 .statusCode(403)
-                .body("operation", equalTo("Error.AccessDenied"));
+                .body("operation", equalTo("Error.ForbiddenAction"));
     }
 
 }

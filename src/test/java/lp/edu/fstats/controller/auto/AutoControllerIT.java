@@ -43,7 +43,7 @@ public class AutoControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void startSync_shouldReturnForbidden_whenUserIsAdminButNotSuperAdmin(){
+    void startSync_shouldReturnForbiddenAction_whenUserIsAdminButNotSuperAdmin(){
         User admin = authTestHelper.createUser(
                 "admin_user",
                 "admin@test.com",
@@ -57,7 +57,7 @@ public class AutoControllerIT extends IntegrationTestBase {
                 .post("/auto/PL")
         .then()
                 .statusCode(403)
-                .body("operation", equalTo("Error.AccessDenied"))
+                .body("operation", equalTo("Error.ForbiddenAction"))
                 .body("message", equalTo("Você não têm permissão para acessar este recurso."));
     }
 
