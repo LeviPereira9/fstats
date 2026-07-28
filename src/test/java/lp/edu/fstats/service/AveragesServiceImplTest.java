@@ -2,6 +2,7 @@ package lp.edu.fstats.service;
 
 import lp.edu.fstats.dto.averages.AverageResponse;
 import lp.edu.fstats.dto.averages.AveragesResponse;
+import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.factory.entity.AveragesTestFactory;
 import lp.edu.fstats.factory.entity.TeamTestFactory;
 import lp.edu.fstats.model.avarages.Averages;
@@ -96,14 +97,12 @@ public class AveragesServiceImplTest {
     }
 
     @Test
-    void findAllByCompetition_shouldReturnEmptyResponse_whenNoAveragesFound(){
+    void findAllByCompetition_shouldThrowNotFound_whenNoAveragesFound(){
 
         when(averagesRepository.findAllByCompetition_Id(10L)).thenReturn(List.of());
 
-        AveragesResponse response = averagesService.findAllByCompetition(10L);
-
-        assertNotNull(response);
-        assertTrue(response.averages().isEmpty());
+        assertThrows(CustomNotFoundException.class,
+                ()-> averagesService.findAllByCompetition(10L));
 
     }
 

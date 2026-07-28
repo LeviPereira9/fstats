@@ -49,7 +49,7 @@ public class CodeControllerIT extends IntegrationTestBase {
                 .get("/competition/code")
         .then()
                 .statusCode(401)
-                .body("operation", equalTo("Error.Unauthorized"));
+                .body("operation", equalTo("Error.ForbiddenAction"));
     }
 
     // getAll - RateLimit)

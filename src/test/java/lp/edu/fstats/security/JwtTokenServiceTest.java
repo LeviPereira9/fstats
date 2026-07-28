@@ -3,6 +3,7 @@ package lp.edu.fstats.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import lp.edu.fstats.exception.custom.CustomForbiddenActionException;
 import lp.edu.fstats.exception.custom.CustomInternalServerError;
 import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.factory.entity.UserTestFactory;
@@ -177,7 +178,7 @@ public class JwtTokenServiceTest {
     }
 
     @Test
-    void verifyToken_shouldThrowInternalServerError_whenTokenVersionDoesNotMatch(){
+    void verifyToken_shouldThrowForbiddenAction_whenTokenVersionDoesNotMatch(){
         User userAtGeneration = this.buildUser("joao", "v1");
         String token = jwtTokenService.generateToken(userAtGeneration);
 
@@ -186,7 +187,7 @@ public class JwtTokenServiceTest {
 
         when(authorizationService.loadUserByUsername("joao")).thenReturn(userInDataBase);
 
-        assertThrows(CustomInternalServerError.class,
+        assertThrows(CustomForbiddenActionException.class,
                 ()-> jwtTokenService.verifyToken(token));
     }
 
