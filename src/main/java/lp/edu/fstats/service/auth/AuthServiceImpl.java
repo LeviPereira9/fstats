@@ -5,16 +5,22 @@ import lombok.RequiredArgsConstructor;
 import lp.edu.fstats.dto.auth.AuthLogin;
 import lp.edu.fstats.dto.auth.AuthRegister;
 import lp.edu.fstats.dto.auth.AuthResponse;
+import lp.edu.fstats.dto.user.UserShortResponse;
 import lp.edu.fstats.exception.custom.CustomBadRequestException;
 import lp.edu.fstats.exception.custom.CustomDuplicateFieldException;
+import lp.edu.fstats.exception.custom.CustomForbiddenActionException;
+import lp.edu.fstats.exception.custom.CustomUnauthorizedException;
 import lp.edu.fstats.model.user.User;
 import lp.edu.fstats.model.verification.TokenType;
 import lp.edu.fstats.repository.user.UserRepository;
 import lp.edu.fstats.security.jwt.service.JwtTokenService;
+import lp.edu.fstats.service.user.UserService;
 import lp.edu.fstats.service.verification.VerificationService;
+import lp.edu.fstats.util.AuthUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenService jwtTokenService;
     private final AuthenticationManager authenticationManager;
     private final VerificationService verificationService;
+    private final UserService userService;
 
     @Transactional
     @Override
@@ -72,10 +79,21 @@ public class AuthServiceImpl implements AuthService {
                         request.password()
                 );
 
-        Authentication auth = authenticationManager.authenticate(usernamePassword);
+        try {
+            Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-        String token = jwtTokenService.generateToken((User) auth.getPrincipal());
+            String token = jwtTokenService.generateToken((User) auth.getPrincipal());
 
-        return new AuthResponse(token);
+            return new AuthResponse(token);
+        } catch (AuthenticationException e) {
+            throw CustomUnauthorizedException.wrongCredentials();
+        }
+    }
+
+    @Override
+    public UserShortResponse me(){
+        String username = AuthUtil.getRequester().getUsername();
+
+        return userService.getUserShort(username);
     }
 }

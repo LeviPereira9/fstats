@@ -5,10 +5,6 @@ public class CustomForbiddenActionException extends RuntimeException {
         super(message);
     }
 
-    public static CustomForbiddenActionException notAuthenticated() {
-        return new CustomForbiddenActionException("Usuário não autenticado. Faça login para continuar.");
-    }
-
     public static CustomForbiddenActionException notAuthorized() {
         return new CustomForbiddenActionException("Ação não permitida. Apenas o próprio usuário ou um moderador pode realizar esta operação.");
     }

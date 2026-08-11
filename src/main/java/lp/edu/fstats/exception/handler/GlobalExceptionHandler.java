@@ -1,9 +1,6 @@
 package lp.edu.fstats.exception.handler;
 
-import lp.edu.fstats.exception.custom.CustomBadRequestException;
-import lp.edu.fstats.exception.custom.CustomDuplicateFieldException;
-import lp.edu.fstats.exception.custom.CustomForbiddenActionException;
-import lp.edu.fstats.exception.custom.CustomNotFoundException;
+import lp.edu.fstats.exception.custom.*;
 import lp.edu.fstats.response.normal.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,6 +97,22 @@ public class GlobalExceptionHandler {
         Response<Void> response = Response
                 .<Void>builder()
                 .operation("Error.BadRequest")
+                .code(status.value())
+                .message(ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(status).body(response);
+    }
+
+    @ExceptionHandler(CustomUnauthorizedException.class)
+    public ResponseEntity<Response<Void>> handleCustomUnauthorizedException(
+            CustomUnauthorizedException ex) {
+
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+
+        Response<Void> response = Response
+                .<Void>builder()
+                .operation("Error.Unauthorized")
                 .code(status.value())
                 .message(ex.getMessage())
                 .build();

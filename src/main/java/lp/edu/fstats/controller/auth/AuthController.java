@@ -9,6 +9,7 @@ import lp.edu.fstats.doc.annotations.auth.DocRegisterUser;
 import lp.edu.fstats.dto.auth.AuthLogin;
 import lp.edu.fstats.dto.auth.AuthRegister;
 import lp.edu.fstats.dto.auth.AuthResponse;
+import lp.edu.fstats.dto.user.UserShortResponse;
 import lp.edu.fstats.response.normal.Response;
 import lp.edu.fstats.service.auth.AuthService;
 import org.springframework.http.HttpHeaders;
@@ -36,13 +37,7 @@ public class AuthController {
 
         AuthResponse data = authService.register(request);
 
-        ResponseCookie cookie = ResponseCookie.from("access_token", data.token())
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .sameSite("Strict")
-                .maxAge(Duration.ofDays(7))
-                .build();
+        ResponseCookie cookie = this.setCookie(data.toString(), 15);
 
         int code = HttpStatus.CREATED.value();
 
@@ -64,13 +59,7 @@ public class AuthController {
         AuthResponse data = authService.login(request);
         int code = HttpStatus.OK.value();
 
-        ResponseCookie cookie = ResponseCookie.from("access_token", data.token())
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .sameSite("Strict")
-                .maxAge(Duration.ofDays(7))
-                .build();
+        ResponseCookie cookie = this.setCookie(data.token(), 15);
 
         Response<Void> response = Response.<Void>builder()
                 .operation("Auth.Login")
@@ -82,6 +71,55 @@ public class AuthController {
                 .status(code)
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Response<Void>> logout(){
+
+        int code = HttpStatus.OK.value();
+
+        ResponseCookie cookie = this.setCookie("", 0);
+
+        Response<Void> response = Response.<Void>builder()
+                .operation("Auth.Logout")
+                .code(code)
+                .message("Usuário deslogado com sucesso.")
+                .build();
+
+        return ResponseEntity
+                .status(code)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Response<UserShortResponse>> me(){
+        int code = HttpStatus.OK.value();
+
+        UserShortResponse data = authService.me();
+
+        Response<UserShortResponse> response = Response.<UserShortResponse>builder()
+                .operation("Auth.Me")
+                .code(code)
+                .message("Usuário encontrado com sucesso.")
+                .data(data)
+                .build();
+
+        return ResponseEntity
+                .status(code)
+                .body(response);
+    }
+
+    private ResponseCookie setCookie(String token, int days){
+
+
+        return ResponseCookie.from("access_token", token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Strict")
+                .maxAge(Duration.ofDays(days))
+                .build();
     }
 
 }

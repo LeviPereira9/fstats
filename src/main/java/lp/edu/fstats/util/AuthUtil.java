@@ -1,13 +1,15 @@
 package lp.edu.fstats.util;
 
 import lp.edu.fstats.exception.custom.CustomForbiddenActionException;
+import lp.edu.fstats.exception.custom.CustomUnauthorizedException;
 import lp.edu.fstats.model.user.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuthUtil {
     public static final String[] PUBLIC_ENDPOINTS = {
-            "/api/v1/auth/**",
+            "/api/v1/auth/register",
+            "/api/v1/auth/login",
             "/api/v1/verify/**",
             "/v2/api-docs",
             "/v3/api-docs",
@@ -18,15 +20,14 @@ public class AuthUtil {
             "/configuration/security",
             "/swagger-ui/**",
             "/webjars/**",
-            "/swagger-ui.html",
-            "/api/v1/auth/**"
+            "/swagger-ui.html"
     };
 
     public static User getRequester(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication == null || !authentication.isAuthenticated()){
-            throw CustomForbiddenActionException.notAuthenticated();
+            throw CustomUnauthorizedException.notAuthenticated();
         }
 
         Object principal = authentication.getPrincipal();
@@ -35,7 +36,7 @@ public class AuthUtil {
             return user;
         }
 
-        throw CustomForbiddenActionException.notAuthenticated();
+        throw CustomUnauthorizedException.notAuthenticated();
     }
 
     public static boolean isSelfOrAdmin(String username) {

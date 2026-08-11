@@ -292,8 +292,8 @@ public class AuthControllerIT extends IntegrationTestBase {
         .when()
                 .post("/auth/login")
         .then()
-                .statusCode(404)
-                .body("operation", equalTo("Error.NotFound"));
+                .statusCode(401)
+                .body("operation", equalTo("Error.Unauthorized"));
     }
 
 }

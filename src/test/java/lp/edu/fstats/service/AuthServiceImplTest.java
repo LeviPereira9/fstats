@@ -5,6 +5,7 @@ import lp.edu.fstats.dto.auth.AuthRegister;
 import lp.edu.fstats.dto.auth.AuthResponse;
 import lp.edu.fstats.exception.custom.CustomBadRequestException;
 import lp.edu.fstats.exception.custom.CustomDuplicateFieldException;
+import lp.edu.fstats.exception.custom.CustomUnauthorizedException;
 import lp.edu.fstats.model.user.User;
 import lp.edu.fstats.model.verification.TokenType;
 import lp.edu.fstats.repository.user.UserRepository;
@@ -163,10 +164,10 @@ public class AuthServiceImplTest {
 
         when(authenticationManager.authenticate(any()))
                 .thenThrow(
-                        new BadCredentialsException("Credenciais inválidas.")
+                        new CustomUnauthorizedException("Credenciais inválidas.")
                 );
 
-        assertThrows(BadCredentialsException.class,
+        assertThrows(CustomUnauthorizedException.class,
                 ()-> authService.login(request));
 
         verify(jwtTokenService, never()).generateToken(any());
