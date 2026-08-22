@@ -73,12 +73,12 @@ public class SecurityConfiguration {
 
         config.setAllowedOrigins(List.of(
                 //"https://arthurguerraa.github.io",
-                "*"
+                "http://localhost:5173"
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(false); //true
+        config.setAllowCredentials(true); //true
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
