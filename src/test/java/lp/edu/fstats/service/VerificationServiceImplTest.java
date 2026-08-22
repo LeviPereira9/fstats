@@ -320,7 +320,7 @@ public class VerificationServiceImplTest {
     @Test
     void confirmEmailChange_shouldChangeEmail_whenTokenIsValid(){
         User user = this.buildUser("joao");
-        VerificationToken token = this.buildToken(user, TokenType.EMAIL_CHANGE);
+        VerificationToken token = this.buildToken(user, TokenType.EMAIL);
         token.setContext("novo@email.com");
 
         when(verificationTokenRepository.findByUser_UsernameAndToken("joao", "token-valido"))
@@ -340,7 +340,7 @@ public class VerificationServiceImplTest {
     @Test
     void confirmEmailChange_shouldThrowBadRequest_whenTokenIsExpired(){
         User user = this.buildUser("joao");
-        VerificationToken token = this.buildExpiredToken(user, TokenType.EMAIL_CHANGE);
+        VerificationToken token = this.buildExpiredToken(user, TokenType.EMAIL);
         token.setContext("novo@email.com");
 
         when(verificationTokenRepository.findByUser_UsernameAndToken("joao", "token-valido"))
@@ -358,7 +358,7 @@ public class VerificationServiceImplTest {
     void confirmEmailChange_shouldThrowBadRequest_whenTokenIsAlreadyUsed(){
 
         User user = this.buildUser("joao");
-        VerificationToken token = this.buildUsedToken(user, TokenType.EMAIL_CHANGE);
+        VerificationToken token = this.buildUsedToken(user, TokenType.EMAIL);
         token.setContext("novo@email.com");
 
         when(verificationTokenRepository.findByUser_UsernameAndToken("joao", "token-valido"))

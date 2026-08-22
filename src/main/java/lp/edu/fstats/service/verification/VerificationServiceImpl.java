@@ -94,7 +94,7 @@ public class VerificationServiceImpl implements VerificationService {
 
     @Override
     public void sendEmailChangeConfirmation(User user, String newEmail) {
-        VerificationToken verificationToken = new VerificationToken(user, TokenType.EMAIL_CHANGE);
+        VerificationToken verificationToken = new VerificationToken(user, TokenType.EMAIL);
         verificationToken.setContext(newEmail);
 
         verificationTokenRepository.save(verificationToken);
@@ -105,7 +105,7 @@ public class VerificationServiceImpl implements VerificationService {
     @Transactional
     @Override
     public void confirmEmailChange(String username, String token) {
-        VerificationToken verificationToken = this.findVerificationToken(username, token, TokenType.EMAIL_CHANGE);
+        VerificationToken verificationToken = this.findVerificationToken(username, token, TokenType.EMAIL);
         verificationToken.setUsed(true);
 
         User user = verificationToken.getUser();

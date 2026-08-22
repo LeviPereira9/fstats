@@ -7,7 +7,7 @@ public enum TokenType {
 
     CONFIRMATION("CONFIRMATION"),
     PASSWORD("PASSWORD"),
-    EMAIL_CHANGE("EMAIL_CHANGE");
+    EMAIL("EMAIL");
 
     private final String value;
 
