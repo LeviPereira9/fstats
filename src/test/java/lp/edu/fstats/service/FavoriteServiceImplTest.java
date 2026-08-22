@@ -104,7 +104,7 @@ public class FavoriteServiceImplTest {
        Code code = CodeTestFactory.buildCode(1, "PL", "Premier League");
         FavoriteAddRequest request = new FavoriteAddRequest(1);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         when(codeRepository.findById(1)).thenReturn(Optional.of(code));
 
@@ -138,7 +138,7 @@ public class FavoriteServiceImplTest {
 
        FavoriteAddRequest request = new FavoriteAddRequest(1);
 
-       when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
+       when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.empty());
 
        assertThrows(CustomNotFoundException.class,
                ()-> favoriteService.addFavorite("joao", request));
@@ -154,7 +154,7 @@ public class FavoriteServiceImplTest {
 
         FavoriteAddRequest request = new FavoriteAddRequest(1);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         when(codeRepository.findById(1)).thenReturn(Optional.empty());
 
@@ -173,7 +173,7 @@ public class FavoriteServiceImplTest {
 
         FavoriteAddRequest request = new FavoriteAddRequest(1);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         when(codeRepository.findById(1)).thenReturn(Optional.of(code));
 

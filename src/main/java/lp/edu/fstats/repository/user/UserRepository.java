@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("""
-        SELECT u FROM User u WHERE u.username = :login OR u.email = :login
+        SELECT u FROM User u WHERE u.username = :login OR u.email = :login AND u.deleted = FALSE
 """)
     Optional<User> findByUsernameOrEmail(String login);
 
@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsername(String username);
 
-    Optional<User> findByUsername(String username);
+    Optional<User> findByUsernameAndDeletedFalse(String username);
 
     @Query("""
     SELECT U FROM User U

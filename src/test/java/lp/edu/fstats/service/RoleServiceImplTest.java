@@ -66,7 +66,7 @@ public class RoleServiceImplTest {
 
         mockAuthenticatedUser(admin);
 
-        when(userRepository.findByUsername("joao"))
+        when(userRepository.findByUsernameAndDeletedFalse("joao"))
                 .thenReturn(Optional.of(user));
 
         roleService.addRole("joao", "MOD");
@@ -81,7 +81,7 @@ public class RoleServiceImplTest {
         User admin = buildAdmin("admin");
         mockAuthenticatedUser(admin);
 
-        when(userRepository.findByUsername("joao"))
+        when(userRepository.findByUsernameAndDeletedFalse("joao"))
                 .thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class,
@@ -96,7 +96,7 @@ public class RoleServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(admin);
 
-        when(userRepository.findByUsername("joao"))
+        when(userRepository.findByUsernameAndDeletedFalse("joao"))
                 .thenReturn(Optional.of(user));
 
         assertThrows(CustomNotFoundException.class,
@@ -111,7 +111,7 @@ public class RoleServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(admin);
 
-        when(userRepository.findByUsername("joao"))
+        when(userRepository.findByUsernameAndDeletedFalse("joao"))
                 .thenReturn(Optional.of(user));
 
         assertThrows(CustomForbiddenActionException.class,
@@ -126,7 +126,7 @@ public class RoleServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(admin);
 
-        when(userRepository.findByUsername("joao"))
+        when(userRepository.findByUsernameAndDeletedFalse("joao"))
                 .thenReturn(Optional.of(user));
 
         assertThrows(CustomForbiddenActionException.class,
@@ -142,7 +142,7 @@ public class RoleServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(superAdmin);
 
-        when(userRepository.findByUsername("joao"))
+        when(userRepository.findByUsernameAndDeletedFalse("joao"))
                 .thenReturn(Optional.of(user));
 
         roleService.addRole("joao", "ADMIN");

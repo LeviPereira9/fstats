@@ -60,13 +60,13 @@ class UserServiceImplTest {
 
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         UserResponse response = userService.getUser("joao");
 
         assertNotNull(response);
         assertEquals("joao", response.username());
-        verify(userRepository).findByUsername("joao");
+        verify(userRepository).findByUsernameAndDeletedFalse("joao");
     }
 
     @Test
@@ -76,13 +76,13 @@ class UserServiceImplTest {
         mockAuthenticatedUser(admin);
 
         User user = buildUser("joao");
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         UserResponse response = userService.getUser("joao");
 
         assertNotNull(response);
         assertEquals("joao", response.username());
-        verify(userRepository).findByUsername("joao");
+        verify(userRepository).findByUsernameAndDeletedFalse("joao");
     }
 
     @Test
@@ -103,7 +103,7 @@ class UserServiceImplTest {
 
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class,
                 () -> userService.getUser("joao"));
@@ -115,18 +115,18 @@ class UserServiceImplTest {
     void getUserShort_shouldReturnUserShortResponse_whenUserExists(){
         User user = buildUser("joao");
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         UserShortResponse response = userService.getUserShort("joao");
 
         assertNotNull(response);
         assertEquals("joao", response.username());
-        verify(userRepository).findByUsername("joao");
+        verify(userRepository).findByUsernameAndDeletedFalse("joao");
     }
 
     @Test
     void getUserShort_shouldThrowNotFound_whenUserDoesNotExist(){
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class,
                 ()-> userService.getUserShort("joao"));
@@ -178,7 +178,7 @@ class UserServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 
         UserProfileUpdateRequest request = new UserProfileUpdateRequest(
@@ -200,7 +200,7 @@ class UserServiceImplTest {
 
         User user = buildUser("joao");
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenReturn(user);
 
         UserProfileUpdateRequest request = new UserProfileUpdateRequest(
@@ -237,7 +237,7 @@ class UserServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.empty());
 
         UserProfileUpdateRequest request = new UserProfileUpdateRequest(
                 "nova-foto.jpg",
@@ -256,7 +256,7 @@ class UserServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         userService.softDeleteUser("joao");
 
@@ -271,7 +271,7 @@ class UserServiceImplTest {
 
         User user = buildUser("joao");
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         userService.softDeleteUser("joao");
 
@@ -295,7 +295,7 @@ class UserServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class,
                 ()-> userService.softDeleteUser("joao"));
@@ -309,7 +309,7 @@ class UserServiceImplTest {
 
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         UserPasswordUpdateRequest request = new UserPasswordUpdateRequest(
                 "senha123",
@@ -345,7 +345,7 @@ class UserServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         UserPasswordUpdateRequest request = new UserPasswordUpdateRequest(
                 "senhaErrada",
@@ -364,7 +364,7 @@ class UserServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         UserPasswordUpdateRequest request = new UserPasswordUpdateRequest(
                 "senha123",
@@ -383,7 +383,7 @@ class UserServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         UserPasswordUpdateRequest request = new UserPasswordUpdateRequest(
                 "senha123",
@@ -404,7 +404,7 @@ class UserServiceImplTest {
         User user = buildUser("joao");
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         UserEmailUpdateRequest request = new UserEmailUpdateRequest("novo@email.com");
 
@@ -420,7 +420,7 @@ class UserServiceImplTest {
 
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.of(user));
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.of(user));
 
         UserEmailUpdateRequest request = new UserEmailUpdateRequest("novo@email.com");
 
@@ -436,7 +436,7 @@ class UserServiceImplTest {
 
         mockAuthenticatedUser(user);
 
-        when(userRepository.findByUsername("joao")).thenReturn(Optional.empty());
+        when(userRepository.findByUsernameAndDeletedFalse("joao")).thenReturn(Optional.empty());
 
         UserEmailUpdateRequest request = new UserEmailUpdateRequest("novo@email.com");
 

@@ -46,7 +46,7 @@ public class UserRepositoryIT extends RepositoryTestBase {
 
     // findByUsernameOrEmail
     @Test
-    void findByUsernameOrEmail_shouldReturnUser_whenSearchingByUsername(){
+    void findByUsernameOrEmail_shouldReturnUser_whenSearchingByUsernameAndDeletedFalse(){
         userRepository.save(this.buildUser(
                 "joao",
                 "joao@email.com",
@@ -59,7 +59,7 @@ public class UserRepositoryIT extends RepositoryTestBase {
     }
 
     @Test
-    void findByUsernameOrEmail_shouldReturnEmpty_whenUserDoesNotExist(){
+    void findByUsernameAndDeletedFalseOrEmail_shouldReturnEmpty_whenUserDoesNotExist(){
         Optional<User> result = userRepository.findByUsernameOrEmail("ninguem");
 
         assertFalse(result.isPresent());

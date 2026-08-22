@@ -11,7 +11,6 @@ import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.model.favorites.Favorite;
 import lp.edu.fstats.model.user.User;
 import lp.edu.fstats.repository.code.CodeRepository;
-import lp.edu.fstats.repository.competition.CompetitionRepository;
 import lp.edu.fstats.repository.favorites.FavoriteRepository;
 import lp.edu.fstats.repository.user.UserRepository;
 import lp.edu.fstats.util.AuthUtil;
@@ -40,7 +39,7 @@ public class FavoriteServiceImpl implements FavoriteService {
 
         if(!AuthUtil.isSelfRequest(username)) throw CustomForbiddenActionException.notAuthorized();
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameAndDeletedFalse(username)
                 .orElseThrow(CustomNotFoundException::user);
 
         Code code = codeRepository.findById(request.competitionId())

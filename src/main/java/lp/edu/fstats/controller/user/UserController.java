@@ -57,13 +57,20 @@ public class UserController {
 
     @DocGetUsersBySearch
     @GetMapping("/search")
-    public ResponseEntity<PageResponse<UserShortResponse>> getUsersBySearch(
+    public ResponseEntity<Response<PageResponse<UserShortResponse>>> getUsersBySearch(
             @RequestParam String search,
             @RequestParam(defaultValue = "0") int page
     ){
         PageResponse<UserShortResponse> data = userService.getUsersBySearch(search, page);
 
-        return ResponseEntity.ok().body(data);
+        Response<PageResponse<UserShortResponse>> response = Response.<PageResponse<UserShortResponse>>builder()
+                .operation("User.Search")
+                .code(HttpStatus.OK.value())
+                .message("Busca de usuários concluída com sucesso.")
+                .data(data)
+                .build();
+
+        return ResponseEntity.ok().body(response);
     }
 
     @DocUpdateUser

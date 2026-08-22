@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
             throw CustomForbiddenActionException.notAuthorized();
         }
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameAndDeletedFalse(username)
                 .orElseThrow(CustomNotFoundException::user);
 
         return new UserResponse(user);
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserShortResponse getUserShort(String username) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameAndDeletedFalse(username)
                 .orElseThrow(CustomNotFoundException::user);
 
         return new UserShortResponse(user);
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
             throw CustomForbiddenActionException.notAuthorized();
         }
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameAndDeletedFalse(username)
                 .orElseThrow(CustomNotFoundException::user);
 
         request.updateUser(user);
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
             throw CustomForbiddenActionException.notAuthorized();
         }
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameAndDeletedFalse(username)
                 .orElseThrow(CustomNotFoundException::user);
 
         user.softDelete();
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
             throw CustomForbiddenActionException.notAuthorized();
         }
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameAndDeletedFalse(username)
                 .orElseThrow(CustomNotFoundException::user);
 
         String newPasswordHash = this.validatePasswordRequest(request, user);
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
             throw CustomForbiddenActionException.notAuthorized();
         }
 
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameAndDeletedFalse(username)
                 .orElseThrow(CustomNotFoundException::user);
 
         if(!user.isVerified()){

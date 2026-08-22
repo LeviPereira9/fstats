@@ -27,7 +27,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void addRole(String username, String targetRole) {
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsernameAndDeletedFalse(username)
                 .orElseThrow(CustomNotFoundException::user);
 
         Role role = Role.getRoleByName(targetRole);
