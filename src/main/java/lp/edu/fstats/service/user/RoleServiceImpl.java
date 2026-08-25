@@ -34,8 +34,8 @@ public class RoleServiceImpl implements RoleService {
 
         User requester = AuthUtil.getRequester();
 
-        if(!requester.getRole().canModify(role)){
-            throw CustomForbiddenActionException.notAuthorized();
+        if(!requester.getRole().canModify(role) || !requester.getRole().canModify(user.getRole())){
+            throw CustomForbiddenActionException.roleValidation();
         }
 
         user.setRole(role);
