@@ -9,7 +9,7 @@ public record AverageResponse(
         BigDecimal avgGoalsForHome,
         BigDecimal avgGoalsAgainstHome,
         BigDecimal avgGoalsForAway,
-        BigDecimal avgGaolsAgainstAway
+        BigDecimal avgGoalsAgainstAway
 ) {
     public AverageResponse(Averages source){
         this(
