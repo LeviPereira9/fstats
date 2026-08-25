@@ -55,4 +55,10 @@ public class AuthUtil {
 
         return requester.getUsername().equals(username);
     }
+
+    public static boolean hasElevatedPrivileges(){
+        User requester = getRequester();
+
+        return requester.getRole().hasElevatedPrivileges();
+    }
 }

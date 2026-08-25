@@ -16,4 +16,10 @@ public class CustomForbiddenActionException extends RuntimeException {
     public static CustomForbiddenActionException tokenValidation(){
         return new CustomForbiddenActionException("O token de autenticação é inválido ou expirou. Solicite um novo acesso.");
     }
+
+    public static CustomForbiddenActionException roleValidation() {
+        return new CustomForbiddenActionException(
+                "Ação não permitida. Você não possui permissão para alterar cargos superiores ao seu ou de usuários com cargo superior ao seu."
+        );
+    }
 }
