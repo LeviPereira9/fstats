@@ -2,6 +2,7 @@ package lp.edu.fstats.model.competition;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lp.edu.fstats.model.code.Code;
 
 import java.time.LocalDate;
 
@@ -19,8 +20,11 @@ public class Competition {
 
     @Column(name = "Nm_Competicao")
     private String name;
-    @Column(name = "Ds_Codigo")
-    private String code;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_Codigo")
+    private Code code;
+
     @Column(name = "Ds_Tipo")
     private String type;
     @Column(name = "Ur_Emblema")

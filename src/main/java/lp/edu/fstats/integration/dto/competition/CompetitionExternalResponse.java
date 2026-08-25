@@ -1,5 +1,6 @@
 package lp.edu.fstats.integration.dto.competition;
 
+import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.model.competition.Competition;
 
 public record CompetitionExternalResponse(
@@ -10,7 +11,7 @@ public record CompetitionExternalResponse(
     String emblem,
     CurrentSeasonExternalResponse currentSeason
 ) {
-    public Competition toModel(){
+    public Competition toModel(Code code){
         Competition competition = new Competition();
 
         competition.setExternalId(currentSeason().id());

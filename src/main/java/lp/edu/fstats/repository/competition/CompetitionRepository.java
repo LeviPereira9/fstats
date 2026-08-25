@@ -15,17 +15,13 @@ public interface CompetitionRepository extends JpaRepository<Competition, Long> 
     @Query("""
     SELECT c
         FROM Competition c
-        WHERE c.code = :code
-          AND c.startDate = (
-              SELECT MAX(c2.startDate)
-              FROM Competition c2
-              WHERE c2.code = :code
-          )
+        WHERE c.code.code = :code
+          AND c.active = true
 """)
     Optional<Competition> findByCode(String code);
 
     @Query("""
-    SELECT c FROM Competition c WHERE c.code = :code AND c.status = 'Em andamento'
+    SELECT c FROM Competition c WHERE c.code.code = :code AND c.status = 'Em andamento'
 """)
     Optional<Competition> findByCodeAndStatus(@Param("code") String code);
 

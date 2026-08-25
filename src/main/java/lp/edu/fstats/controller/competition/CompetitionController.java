@@ -35,7 +35,7 @@ public class CompetitionController {
     private final AveragesService averagesService;
 
     @DocGetCompetition
-    @RateLimit
+    @RateLimit(requests = 100, time = 5)
     @GetMapping("/{code}")
     public ResponseEntity<Response<CompetitionResponse>> getCompetition(
             @PathVariable String code
@@ -54,7 +54,7 @@ public class CompetitionController {
     }
 
     @DocGetMatches
-    @RateLimit(requests = 15)
+    @RateLimit(requests = 100, time = 5)
     @GetMapping("/{competitionId}/matches")
     public ResponseEntity<Response<MatchesResponse>> getMatches(
             @PathVariable Long competitionId,
@@ -73,7 +73,7 @@ public class CompetitionController {
     }
 
     @DocGetAverages
-    @RateLimit
+    @RateLimit(requests = 100, time = 5)
     @GetMapping("/{competitionId}/averages")
     public ResponseEntity<Response<AveragesResponse>> getAverages(
             @PathVariable Long competitionId
@@ -91,7 +91,7 @@ public class CompetitionController {
     }
 
     @DocGetStandings
-    @RateLimit
+    @RateLimit(requests = 100, time = 5)
     @GetMapping("/{competitionId}/standings")
     public ResponseEntity<Response<StandingsResponse>> getStandings(
             @PathVariable Long competitionId

@@ -1,5 +1,6 @@
 package lp.edu.fstats.integration.service.football.sync;
 
+import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.integration.service.football.sync.context.CompetitionSyncContext;
 import lp.edu.fstats.integration.service.football.sync.context.StandingsSyncContext;
 import lp.edu.fstats.integration.service.football.sync.context.TeamSyncContext;
@@ -41,8 +42,13 @@ public class ExternalSyncOrchestrator {
         List<Code> codes = codeRepository.findAll();
 
         for(Code code : codes){
+
+            if(!code.isActive()){
+                continue;
+            }
+
             try{
-                this.sync(code.getCode());
+                this.sync(code);
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -50,9 +56,12 @@ public class ExternalSyncOrchestrator {
     }
 
     @Async("competitionThread")
-    public void syncCompetition(String code){
-        locks.putIfAbsent(code, new ReentrantLock());
-        ReentrantLock lock = locks.get(code);
+    public void syncCompetition(Integer codeId){
+        locks.putIfAbsent(codeId.toString(), new ReentrantLock());
+        ReentrantLock lock = locks.get(codeId.toString());
+
+        Code code = codeRepository.findById(codeId)
+                .orElseThrow(CustomNotFoundException::competition);
 
         if(!lock.tryLock()){
             throw new RuntimeException("Lock acquired");
@@ -67,7 +76,7 @@ public class ExternalSyncOrchestrator {
 
     }
 
-    private void sync(String code){
+    private void sync(Code code){
 
         Year season = Year.now();
 

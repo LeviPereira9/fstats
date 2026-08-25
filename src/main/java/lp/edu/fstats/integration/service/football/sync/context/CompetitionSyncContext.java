@@ -28,7 +28,7 @@ public class CompetitionSyncContext {
     }
 
     public String getCode(){
-        return competition.getCode();
+        return competition.getCode().getCode();
     }
 
 }

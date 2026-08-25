@@ -33,7 +33,7 @@ public class StandingsSyncStep {
 
         Competition competition = csc.getCompetition();
 
-        StandingsExternalResponse externalStandings = footballApiClient.getCurrentTotalStandings(competition.getCode(), csc.getSeason());
+        StandingsExternalResponse externalStandings = footballApiClient.getCurrentTotalStandings(competition.getCode().getCode(), csc.getSeason());
 
         Map<Long, Standings> currentStandingsMappedByTeamId = standingsService.findAllByCompetitionId(competition.getId());
 

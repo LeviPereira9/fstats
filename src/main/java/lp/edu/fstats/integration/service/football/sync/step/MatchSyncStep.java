@@ -47,7 +47,7 @@ public class MatchSyncStep {
         System.out.println("Competição Dia: " + matchDay);
 
         MatchesExternalResponse externalMatches = footballApiClient
-                .getCurrentMatches(competition.getCode(), season, matchDay);
+                .getCurrentMatches(competition.getCode().getCode(), season, matchDay);
 
 
         if(!externalMatches.hasMatches()){
@@ -56,6 +56,7 @@ public class MatchSyncStep {
 
             if(competition.isFinished()){
                 competition.setStatus("Finalizada");
+                competition.setActive(false);
             }
 
             competitionService.saveCompetition(competition);
@@ -118,7 +119,6 @@ public class MatchSyncStep {
     private Match getMatch(Match currentMatch, MatchExternalResponse externalMatch) {
 
         if(currentMatch == null) {
-            System.out.println("Ta vazio.");
             return externalMatch.toModel();
         };
 

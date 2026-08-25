@@ -1,5 +1,6 @@
 package lp.edu.fstats.dto.competition;
 
+import lp.edu.fstats.dto.code.CodeResponse;
 import lp.edu.fstats.model.competition.Competition;
 
 import java.time.LocalDate;
@@ -7,7 +8,7 @@ import java.time.LocalDate;
 public record CompetitionResponse(
         Long id,
         String name,
-        String code,
+        CodeResponse code,
         String type,
         String emblem,
         Integer currentMatchDay,
@@ -22,7 +23,7 @@ public record CompetitionResponse(
         this(
                 competition.getId(),
                 competition.getName(),
-                competition.getCode(),
+                new CodeResponse(competition.getCode()),
                 competition.getType(),
                 competition.getEmblem(),
                 competition.getApiCurrentMatchDay(),

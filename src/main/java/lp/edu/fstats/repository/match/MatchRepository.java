@@ -14,26 +14,26 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
     List<Match> findAllByExternalIdIn(List<Long> externalIds);
 
     /*@Query("""
-    SELECT m FROM Match m WHERE m.competition.id = :competitionId AND m.matchDay = :matchDay
+    SELECT m FROM Match m WHERE m.competition.id = :codeId AND m.matchDay = :matchDay
 """)
-    List<Match> findAllByCompetitionAndMatchday(@Param("competitionId") Long competitionId,@Param("matchDay") Integer matchDay);*/
+    List<Match> findAllByCompetitionAndMatchday(@Param("codeId") Long codeId,@Param("matchDay") Integer matchDay);*/
 
     List<Match> findAllByCompetition_IdAndMatchDay(Long competitionId, Integer matchDay);
 
     List<Match> findAllByCompetition_Id(Long competitionId);
 
-    @Query("""
+    /*@Query("""
     SELECT
             CASE
                 WHEN COUNT(m) > 0 THEN false
                 ELSE true
             END
         FROM Match m
-        WHERE m.competition.code = :code
+        WHERE m.competition.code.code = :code
           AND m.matchDay = :currentMatchDay
           AND m.status <> 'FINISHED'
 """)
     boolean currentMatchDayIsFinished(
             @Param("code") String code,
-            @Param("currentMatchDay") Integer currentMatchDay);
+            @Param("currentMatchDay") Integer currentMatchDay);*/
 }
