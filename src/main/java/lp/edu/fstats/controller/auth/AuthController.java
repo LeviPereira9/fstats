@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lp.edu.fstats.config.redis.ratelimit.snippets.RateLimit;
 import lp.edu.fstats.doc.annotations.auth.DocLoginUser;
 import lp.edu.fstats.doc.annotations.auth.DocRegisterUser;
 import lp.edu.fstats.dto.auth.AuthLogin;
@@ -32,6 +33,7 @@ public class AuthController {
     private final AuthService authService;
 
     @DocRegisterUser
+    @RateLimit
     @PostMapping("/register")
     public ResponseEntity<Response<Void>> registerUser(@RequestBody @Valid AuthRegister request){
 
@@ -54,6 +56,7 @@ public class AuthController {
     }
 
     @DocLoginUser
+    @RateLimit
     @PostMapping("/login")
     public ResponseEntity<Response<Void>> loginUser(@RequestBody @Valid AuthLogin request){
         AuthResponse data = authService.login(request);
