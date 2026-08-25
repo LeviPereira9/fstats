@@ -42,11 +42,11 @@ public class FavoriteServiceImpl implements FavoriteService {
         User user = userRepository.findByUsernameAndDeletedFalse(username)
                 .orElseThrow(CustomNotFoundException::user);
 
-        Code code = codeRepository.findById(request.competitionId())
+        Code code = codeRepository.findById(request.codeId())
                 .orElseThrow(CustomNotFoundException::competition);
 
         boolean alreadyInFavorites = favoriteRepository.existsByCompetition_IdAndUser_Username(
-                request.competitionId(),
+                request.codeId(),
                 username);
 
         if(alreadyInFavorites) throw CustomDuplicateFieldException.favorite();

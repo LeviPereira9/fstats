@@ -79,7 +79,7 @@ public class FavoriteServiceImplTest {
 
         assertNotNull(response);
         assertEquals(1, response.favorites().size());
-        assertEquals("PL", response.favorites().get(0).competitionCode());
+        assertEquals("PL", response.favorites().get(0).code());
 
         verify(favoriteRepository).findAllByUser_Username("joao");
     }

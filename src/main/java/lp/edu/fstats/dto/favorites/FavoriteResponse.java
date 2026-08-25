@@ -4,13 +4,15 @@ import lp.edu.fstats.model.favorites.Favorite;
 
 public record FavoriteResponse(
         Long favoriteId,
-        String competitionCode,
-        String competitionName
+        Integer codeId,
+        String code,
+        String codeName
 ) {
 
     public FavoriteResponse (Favorite source){
         this(
                 source.getId(),
+                source.getCompetitionId(),
                 source.getCompetitionCode(),
                 source.getCompetitionName());
     }

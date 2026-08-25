@@ -24,6 +24,10 @@ public class Favorite {
     @JoinColumn(name = "ID_Usuario")
     private User user;
 
+    public Integer getCompetitionId(){
+        return competition.getId();
+    }
+
     public String getCompetitionCode(){
         return competition.getCode();
     }
