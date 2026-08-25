@@ -19,4 +19,7 @@ public class Code {
     @Column(name = "Nm_Competicao")
     private String name;
 
+    @Column(name = "Fl_Ativa")
+    private boolean active;
+
 }

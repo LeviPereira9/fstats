@@ -36,7 +36,7 @@ public class CodeController {
                 .operation("Code.GetAll")
                 .code(HttpStatus.OK.value())
                 .data(data)
-                .message("Competições ativas encontradas com sucesso.")
+                .message("Codigo das competições ativas encontradas com sucesso.")
                 .build();
 
         return ResponseEntity.ok(response);
@@ -54,7 +54,7 @@ public class CodeController {
                 .operation("Code.Create")
                 .code(code)
                 .data(data)
-                .message("Competição adicionada com sucesso.")
+                .message("Código da competição adicionada com sucesso.")
                 .build();
 
         return ResponseEntity.status(code).body(response);
@@ -70,9 +70,27 @@ public class CodeController {
         Response<Void> response = Response.<Void>builder()
                 .operation("Code.Delete")
                 .code(HttpStatus.OK.value())
-                .message("Competição desativada com sucesso.")
+                .message("Código da competição desativada com sucesso.")
                 .build();
 
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{competitionId}")
+    public ResponseEntity<Response<CodeResponse>> reactiveCode(
+            @PathVariable Integer competitionId
+    ){
+        CodeResponse data = codeService.reactiveCode(competitionId);
+
+        int code = HttpStatus.OK.value();
+
+        Response<CodeResponse> response = Response.<CodeResponse>builder()
+                .operation("Code.Update")
+                .code(code)
+                .data(data)
+                .message("Código de competição reativada com sucesso.")
+                .build();
+
+        return ResponseEntity.status(code).body(response);
     }
 }
