@@ -7,7 +7,7 @@ import lp.edu.fstats.model.team.Team;
 import java.time.LocalDateTime;
 
 public record MatchResponse(
-        //Long id,
+        Long id,
         TeamResponse home,
         TeamResponse away,
         ProbabilityResponse probability,
@@ -17,7 +17,7 @@ public record MatchResponse(
     public MatchResponse(Match source) {
 
         this(
-                //match.getId(),
+                source.getId(),
                 new TeamResponse(
                         source.getHomeTeam(),
                         source.getHomeGoals(),
