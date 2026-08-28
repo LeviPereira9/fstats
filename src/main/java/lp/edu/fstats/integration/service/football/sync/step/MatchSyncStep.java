@@ -51,9 +51,6 @@ public class MatchSyncStep {
 
 
         if(!externalMatches.hasMatches()){
-
-            competition.decrementStoredMatchDay();
-
             if(competition.isFinished()){
                 competition.setStatus("Finalizada");
                 competition.setActive(false);
@@ -108,10 +105,11 @@ public class MatchSyncStep {
         }
 
         matchService.saveAll(matchesToSave);
+
+        competition.updateStoredMatchDay(matchDay);
         competitionService.saveCompetition(competition);
 
-        if (!competition.isTwoStoredMatchDaysAhead() || matchDay < competition.getApiCurrentMatchDay()) {
-            competition.incrementMatchDay();
+        if (!competition.isTwoStoredMatchDaysAhead()) {
             this.sync(competition, teams, season, matchDay);
         }
     }

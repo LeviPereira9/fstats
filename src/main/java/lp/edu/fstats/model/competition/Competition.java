@@ -52,25 +52,17 @@ public class Competition {
     @Column(name = "Nr_UltimaRodadaFinalizada")
     private Integer lastCompletedMatchDay = 0;
 
-    public void incrementMatchDay() {
-        boolean alreadyHasFutureMatches = storedMatchDay.equals(apiCurrentMatchDay + 2);
-
-        if(!alreadyHasFutureMatches) storedMatchDay += 1;;
+    public void updateStoredMatchDay(int matchDay){
+        storedMatchDay = matchDay;
     }
 
     public void incrementLastFinishedMatchDay() {
         lastCompletedMatchDay += 1;
     }
 
-    public void decrementStoredMatchDay(){
-        boolean canDecrement = apiCurrentMatchDay.equals(storedMatchDay - 1);
-
-        if(canDecrement) storedMatchDay -= 1;
-    }
-
     public boolean isTwoStoredMatchDaysAhead() {
 
-        return storedMatchDay.equals(apiCurrentMatchDay + 2);
+        return storedMatchDay >= apiCurrentMatchDay + 2;
     }
 
     public boolean isFinished() {

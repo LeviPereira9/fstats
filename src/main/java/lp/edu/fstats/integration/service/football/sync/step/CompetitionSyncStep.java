@@ -46,6 +46,7 @@ public class CompetitionSyncStep {
 
             if(!Objects.equals(savedCompetition.getExternalId(), externalCompetition.currentSeason().id())){
                 savedCompetition.setActive(false);
+                savedCompetition.setStatus("Finalizada");
                 competitionRepository.save(savedCompetition);
 
                 competition = externalCompetition.toModel(Icode);
