@@ -1,5 +1,6 @@
 package lp.edu.fstats.steps;
 
+import lp.edu.fstats.exception.custom.CustomNotFoundException;
 import lp.edu.fstats.factory.context.SyncContextTestFactory;
 import lp.edu.fstats.factory.entity.CompetitionTestFactory;
 import lp.edu.fstats.integration.service.football.sync.ExternalSyncOrchestrator;
@@ -10,23 +11,17 @@ import lp.edu.fstats.integration.service.football.sync.step.*;
 import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.repository.code.CodeRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
-
-import javax.management.RuntimeErrorException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.Year;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -66,28 +61,30 @@ public class ExternalSyncOrchestratorTest {
         return new CompetitionSyncContext();
     }
 
-    private Code buildCode(String code){
+    private Code buildCode(String code, Integer id){
         Code c = new Code();
-        c.setId(1);
+        c.setId(id);
         c.setCode(code);
         c.setName("Premier League");
+        c.setActive(true);
 
         return c;
     }
 
+    private Code buildCode(String code){
+        return this.buildCode(code, 1);
+    }
 
     //syncAll
     @Test
     void syncAll_shouldSyncAllCodes_whenCodesExist(){
-        Code pl = this.buildCode("PL");
-        Code bl1 = this.buildCode("BL1");
+        Code pl = this.buildCode("PL", 1);
+        Code bl1 = this.buildCode("BL1", 2);
 
         Competition cPl = CompetitionTestFactory.buildCompetition("PL");
-
         Competition cBl1 = CompetitionTestFactory.buildCompetition("BL1");
 
         CompetitionSyncContext plCsc = SyncContextTestFactory.buildCsc(cPl);
-
         CompetitionSyncContext bl1Csc = SyncContextTestFactory.buildCsc(cBl1);
 
         TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
@@ -96,10 +93,10 @@ public class ExternalSyncOrchestratorTest {
         when(codeRepository.findAll())
                 .thenReturn(List.of(pl, bl1));
 
-        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+        when(competitionSyncStep.sync(eq(pl), any(Year.class)))
                 .thenReturn(plCsc);
 
-        when(competitionSyncStep.sync(eq("BL1"), any(Year.class)))
+        when(competitionSyncStep.sync(eq(bl1), any(Year.class)))
                 .thenReturn(bl1Csc);
 
         when(teamSyncStep.sync(any(CompetitionSyncContext.class)))
@@ -110,18 +107,29 @@ public class ExternalSyncOrchestratorTest {
 
         externalSyncOrchestrator.syncAll();
 
-        verify(competitionSyncStep, times(2)).sync(any(String.class), any(Year.class));
-
+        verify(competitionSyncStep, times(2)).sync(any(Code.class), any(Year.class));
         verify(teamSyncStep, times(2)).sync(any(CompetitionSyncContext.class));
-
         verify(matchSyncStep, times(2)).sync(any(CompetitionSyncContext.class), any(TeamSyncContext.class));
-
         verify(standingsSyncStep, times(2)).sync(any(CompetitionSyncContext.class), any(TeamSyncContext.class));
-
         verify(averagesStep, times(2)).sync(any(), any(), any());
-
         verify(probabilityStep, times(2)).sync(any(CompetitionSyncContext.class));
+    }
 
+    @Test
+    void syncAll_shouldSkipInactiveCodes(){
+        Code pl = this.buildCode("PL", 1);
+        pl.setActive(false);
+
+        when(codeRepository.findAll()).thenReturn(List.of(pl));
+
+        externalSyncOrchestrator.syncAll();
+
+        verifyNoInteractions(competitionSyncStep);
+        verifyNoInteractions(teamSyncStep);
+        verifyNoInteractions(matchSyncStep);
+        verifyNoInteractions(standingsSyncStep);
+        verifyNoInteractions(averagesStep);
+        verifyNoInteractions(probabilityStep);
     }
 
     @Test
@@ -137,17 +145,15 @@ public class ExternalSyncOrchestratorTest {
         verifyNoInteractions(standingsSyncStep);
         verifyNoInteractions(averagesStep);
         verifyNoInteractions(probabilityStep);
-
     }
 
     @Test
     void syncAll_shouldContinueWithOtherCodes_whenOneCodeThrowsException(){
 
-        Code pl = this.buildCode("PL");
-        Code bl1 = this.buildCode("BL1");
+        Code pl = this.buildCode("PL", 1);
+        Code bl1 = this.buildCode("BL1", 2);
 
         Competition cBl1 = CompetitionTestFactory.buildCompetition("BL1");
-
         CompetitionSyncContext bl1Csc = SyncContextTestFactory.buildCsc(cBl1);
 
         TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
@@ -156,10 +162,10 @@ public class ExternalSyncOrchestratorTest {
         when(codeRepository.findAll())
                 .thenReturn(List.of(pl, bl1));
 
-        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+        when(competitionSyncStep.sync(eq(pl), any(Year.class)))
                 .thenThrow(new RuntimeException("API indisponível"));
 
-        when(competitionSyncStep.sync(eq("BL1"), any(Year.class)))
+        when(competitionSyncStep.sync(eq(bl1), any(Year.class)))
                 .thenReturn(bl1Csc);
 
         when(teamSyncStep.sync(any(CompetitionSyncContext.class)))
@@ -170,25 +176,26 @@ public class ExternalSyncOrchestratorTest {
 
         externalSyncOrchestrator.syncAll();
 
-        //bl1 foi normal, pl1 deu throw
-        verify(competitionSyncStep, times(2)).sync(any(String.class), any(Year.class));
+        //bl1 foi normal, pl deu throw
+        verify(competitionSyncStep, times(2)).sync(any(Code.class), any(Year.class));
         verify(teamSyncStep, times(1)).sync(any(CompetitionSyncContext.class));
-
     }
 
     // sync (via syncCompetition)
     @Test
     void syncCompetition_shouldExecuteAllSteps_whenCompetitionIsActive(){
 
+        Code code = this.buildCode("PL", 1);
         Competition competition = CompetitionTestFactory.buildCompetition("PL");
 
         CompetitionSyncContext csc = SyncContextTestFactory.buildCsc(competition);
-
         TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
-
         StandingsSyncContext ssc = SyncContextTestFactory.buildSsc(List.of(), List.of());
 
-        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+        when(codeRepository.findById(1))
+                .thenReturn(Optional.of(code));
+
+        when(competitionSyncStep.sync(eq(code), any(Year.class)))
                 .thenReturn(csc);
 
         when(teamSyncStep.sync(csc))
@@ -197,7 +204,7 @@ public class ExternalSyncOrchestratorTest {
         when(standingsSyncStep.sync(csc, tsc))
                 .thenReturn(ssc);
 
-        externalSyncOrchestrator.syncCompetition("PL");
+        externalSyncOrchestrator.syncCompetition(1);
 
         InOrder inOrder = inOrder(
                 competitionSyncStep,
@@ -208,7 +215,7 @@ public class ExternalSyncOrchestratorTest {
                 probabilityStep
         );
 
-        inOrder.verify(competitionSyncStep).sync(eq("PL"), any(Year.class));
+        inOrder.verify(competitionSyncStep).sync(eq(code), any(Year.class));
         inOrder.verify(teamSyncStep).sync(csc);
         inOrder.verify(matchSyncStep).sync(csc, tsc);
         inOrder.verify(standingsSyncStep).sync(csc, tsc);
@@ -218,14 +225,18 @@ public class ExternalSyncOrchestratorTest {
 
     @Test
     void syncCompetition_shouldStopAfterCompetitionStep_whenNoActiveCompetition(){
+        Code code = this.buildCode("PL", 1);
         CompetitionSyncContext inactiveCsc = this.buildInactiveCsc();
 
-        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+        when(codeRepository.findById(1))
+                .thenReturn(Optional.of(code));
+
+        when(competitionSyncStep.sync(eq(code), any(Year.class)))
                 .thenReturn(inactiveCsc);
 
-        externalSyncOrchestrator.syncCompetition("PL");
+        externalSyncOrchestrator.syncCompetition(1);
 
-        verify(competitionSyncStep).sync(eq("PL"), any(Year.class));
+        verify(competitionSyncStep).sync(eq(code), any(Year.class));
 
         verifyNoInteractions(teamSyncStep);
         verifyNoInteractions(matchSyncStep);
@@ -234,25 +245,38 @@ public class ExternalSyncOrchestratorTest {
         verifyNoInteractions(probabilityStep);
     }
 
+    @Test
+    void syncCompetition_shouldThrowNotFound_whenCodeDoesNotExist(){
+        when(codeRepository.findById(99))
+                .thenReturn(Optional.empty());
+
+        assertThrows(CustomNotFoundException.class,
+                () -> externalSyncOrchestrator.syncCompetition(99));
+
+        verifyNoInteractions(competitionSyncStep);
+    }
+
     //Locks
     @Test
     void syncCompetition_shouldThrowException_whenLockAlreadyHeldForSameCode() throws InterruptedException{
+        Code code = this.buildCode("PL", 1);
         Competition competition = CompetitionTestFactory.buildCompetition("PL");
 
         CompetitionSyncContext csc = SyncContextTestFactory.buildCsc(competition);
-
         TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
-
         StandingsSyncContext ssc = SyncContextTestFactory.buildSsc(List.of(), List.of());
 
         CountDownLatch firstCallHoldingLock = new CountDownLatch(1);
         CountDownLatch releaseFirstCall = new CountDownLatch(1);
 
-        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+        when(codeRepository.findById(1))
+                .thenReturn(Optional.of(code));
+
+        when(competitionSyncStep.sync(eq(code), any(Year.class)))
                 .thenReturn(csc);
 
         when(teamSyncStep.sync(csc))
-                .thenAnswer( invocation -> {
+                .thenAnswer(invocation -> {
                     // sinaliza que já entrou no sync e está segurando o lock
                     firstCallHoldingLock.countDown();
                     releaseFirstCall.await();
@@ -263,31 +287,33 @@ public class ExternalSyncOrchestratorTest {
                 .thenReturn(ssc);
 
         Thread firstThread = new Thread(() -> {
-            externalSyncOrchestrator.syncCompetition("PL");
+            externalSyncOrchestrator.syncCompetition(1);
         });
 
         firstThread.start();
 
         boolean reachedLockedSection = firstCallHoldingLock.await(2, TimeUnit.SECONDS);
-
         assertTrue(reachedLockedSection);
 
-        // segunda chamada, mesma competição, lock já está preso na thread acima
+        // segunda chamada, mesmo codeId, lock já está preso na thread acima
         assertThrows(RuntimeException.class,
-                ()-> externalSyncOrchestrator.syncCompetition("PL"));
+                () -> externalSyncOrchestrator.syncCompetition(1));
 
         releaseFirstCall.countDown();
         firstThread.join(2000);
 
         //só a primeira chamada realmente completou o fluxo
         verify(competitionSyncStep, times(1))
-                .sync(eq("PL"), any(Year.class));
+                .sync(eq(code), any(Year.class));
 
         verify(matchSyncStep, times(1)).sync(csc, tsc);
     }
 
     @Test
-    void syncCompetition_shouldNotBlock_whenCodesAreDifferente(){
+    void syncCompetition_shouldNotBlock_whenCodesAreDifferent(){
+
+        Code codePL = this.buildCode("PL", 1);
+        Code codeBL1 = this.buildCode("BL1", 2);
 
         Competition cPL = CompetitionTestFactory.buildCompetition("PL");
         Competition cBL1 = CompetitionTestFactory.buildCompetition("BL1");
@@ -298,9 +324,12 @@ public class ExternalSyncOrchestratorTest {
         TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
         StandingsSyncContext ssc = SyncContextTestFactory.buildSsc(List.of(), List.of());
 
-        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+        when(codeRepository.findById(1)).thenReturn(Optional.of(codePL));
+        when(codeRepository.findById(2)).thenReturn(Optional.of(codeBL1));
+
+        when(competitionSyncStep.sync(eq(codePL), any(Year.class)))
                 .thenReturn(plCsc);
-        when(competitionSyncStep.sync(eq("BL1"), any(Year.class)))
+        when(competitionSyncStep.sync(eq(codeBL1), any(Year.class)))
                 .thenReturn(bl1Csc);
 
         when(teamSyncStep.sync(any(CompetitionSyncContext.class)))
@@ -309,24 +338,27 @@ public class ExternalSyncOrchestratorTest {
         when(standingsSyncStep.sync(any(CompetitionSyncContext.class), any(TeamSyncContext.class)))
                 .thenReturn(ssc);
 
-        assertDoesNotThrow(()->{
-            externalSyncOrchestrator.syncCompetition("PL");
-            externalSyncOrchestrator.syncCompetition("BL1");
+        assertDoesNotThrow(() -> {
+            externalSyncOrchestrator.syncCompetition(1);
+            externalSyncOrchestrator.syncCompetition(2);
         });
 
-        verify(competitionSyncStep).sync(eq("PL"), any(Year.class));
-        verify(competitionSyncStep).sync(eq("BL1"), any(Year.class));
-
+        verify(competitionSyncStep).sync(eq(codePL), any(Year.class));
+        verify(competitionSyncStep).sync(eq(codeBL1), any(Year.class));
     }
 
     @Test
     void syncCompetition_shouldAllowNewSync_afterPreviousLockWasReleased(){
+        Code code = this.buildCode("PL", 1);
         Competition competition = CompetitionTestFactory.buildCompetition("PL");
+
         CompetitionSyncContext csc = SyncContextTestFactory.buildCsc(competition);
         TeamSyncContext tsc = SyncContextTestFactory.buildTsc(List.of());
         StandingsSyncContext ssc = SyncContextTestFactory.buildSsc(List.of(), List.of());
 
-        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+        when(codeRepository.findById(1)).thenReturn(Optional.of(code));
+
+        when(competitionSyncStep.sync(eq(code), any(Year.class)))
                 .thenReturn(csc);
         when(teamSyncStep.sync(csc))
                 .thenReturn(tsc);
@@ -334,26 +366,29 @@ public class ExternalSyncOrchestratorTest {
                 .thenReturn(ssc);
 
         // primeira chamada completa normalmente e libera o lock ao final
-        externalSyncOrchestrator.syncCompetition("PL");
+        externalSyncOrchestrator.syncCompetition(1);
 
-        //segunda chamada, mesmo código, lock ja foi liberado e não deve lançar
-        assertDoesNotThrow(() -> externalSyncOrchestrator.syncCompetition("PL"));
+        //segunda chamada, mesmo codeId, lock já foi liberado e não deve lançar
+        assertDoesNotThrow(() -> externalSyncOrchestrator.syncCompetition(1));
 
         verify(competitionSyncStep, times(2))
-                .sync(eq("PL"), any(Year.class));
+                .sync(eq(code), any(Year.class));
     }
 
     @Test
     void syncCompetition_shouldReleaseLock_evenWhenSyncFails(){
+        Code code = this.buildCode("PL", 1);
         Competition competition = CompetitionTestFactory.buildCompetition("PL");
         CompetitionSyncContext csc = SyncContextTestFactory.buildCsc(competition);
 
-        when(competitionSyncStep.sync(eq("PL"), any(Year.class)))
+        when(codeRepository.findById(1)).thenReturn(Optional.of(code));
+
+        when(competitionSyncStep.sync(eq(code), any(Year.class)))
                 .thenReturn(csc);
         when(teamSyncStep.sync(csc)).thenThrow(new RuntimeException("API indisponível"));
 
         //primeira falhou
-        assertThrows(RuntimeException.class,()-> externalSyncOrchestrator.syncCompetition("PL"));
+        assertThrows(RuntimeException.class, () -> externalSyncOrchestrator.syncCompetition(1));
 
         // reset para simular uma nova tentativa
         reset(teamSyncStep);
@@ -364,7 +399,7 @@ public class ExternalSyncOrchestratorTest {
         when(standingsSyncStep.sync(csc, tsc))
                 .thenReturn(SyncContextTestFactory.buildSsc(List.of(), List.of()));
 
-        //se o lock nao foi liberado, essa chamada lança lock acquired
-        assertDoesNotThrow(() -> externalSyncOrchestrator.syncCompetition("PL"));
+        //se o lock não foi liberado, essa chamada lança "Lock acquired"
+        assertDoesNotThrow(() -> externalSyncOrchestrator.syncCompetition(1));
     }
 }

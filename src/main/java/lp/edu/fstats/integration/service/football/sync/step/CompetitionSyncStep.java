@@ -37,6 +37,10 @@ public class CompetitionSyncStep {
 
         if(savedCompetition == null){
 
+            if(competitionRepository.existsByExternalId(externalCompetition.currentSeason().id())){
+                return context;
+            }
+
             competition = externalCompetition.toModel(Icode);
 
         } else {

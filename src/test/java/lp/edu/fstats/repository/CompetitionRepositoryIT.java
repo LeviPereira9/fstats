@@ -1,6 +1,8 @@
 package lp.edu.fstats.repository;
 
 import lp.edu.fstats.base.RepositoryTestBase;
+import lp.edu.fstats.model.code.Code;
+import lp.edu.fstats.repository.code.CodeRepository;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,12 +23,16 @@ public class CompetitionRepositoryIT extends RepositoryTestBase {
     @Autowired
     private CompetitionRepository competitionRepository;
 
+    @Autowired
+    private CodeRepository codeRepository;
+
     @BeforeEach
     void setUp(){
-        competitionRepository.deleteAll();
+        competitionRepository.deleteAllInBatch();
+        codeRepository.deleteAllInBatch();
     }
 
-    private Competition buildCompetition(String code, LocalDate startDate, String status) {
+    private Competition buildCompetition(Code code, LocalDate startDate, String status) {
         Competition competition = new Competition();
         competition.setCode(code);
         competition.setName("Premier League");
@@ -36,28 +42,39 @@ public class CompetitionRepositoryIT extends RepositoryTestBase {
         competition.setStartDate(startDate);
         competition.setEndDate(startDate.plusMonths(9));
         competition.setStatus(status);
+        competition.setActive(true);
+
         return competition;
+    }
+
+    private Code buildAndSaveCode(String codeName) {
+        Code code = new Code();
+        code.setCode(codeName);
+        code.setName(codeName);
+        return codeRepository.save(code);
     }
 
     //findByCode
     @Test
     void findByCode_shouldReturnMostRecentCompetition_whenMultipleExist(){
 
+        Code codePL = this.buildAndSaveCode("PL");
+
         Competition comp1 = this.buildCompetition(
-                "PL",
+                codePL,
                 LocalDate.of(2022, 8, 1),
                 "Finalizada"
         );
 
         Competition comp2 = this.buildCompetition(
-                "PL",
+                codePL,
                 LocalDate.of(2023, 8, 1),
                 "Finalizada"
         );
         comp2.setExternalId(101L);
 
         Competition comp3 = this.buildCompetition(
-                "PL",
+                codePL,
                 LocalDate.of(2024, 8, 1),
                 "Em andamento"
         );
@@ -69,7 +86,7 @@ public class CompetitionRepositoryIT extends RepositoryTestBase {
 
         competitionRepository.save(comp3);
 
-        Optional<Competition> result = competitionRepository.findByCode("PL");
+        Optional<Competition> result = competitionRepository.findByCodeAndStatus("PL");
 
         assertTrue(result.isPresent());
         assertEquals(LocalDate.of(2024, 8, 1), result.get().getStartDate());
@@ -84,18 +101,20 @@ public class CompetitionRepositoryIT extends RepositoryTestBase {
     }
     
     // findByCodeAndStatus
-    
+
     @Test
     void findByCodeAndStatus_shouldReturnCompetition_whenStatusIsInProgress(){
 
+        Code codePL = this.buildAndSaveCode("PL");
+
         Competition comp1 = this.buildCompetition(
-                "PL",
+                codePL,
                 LocalDate.of(2023, 8, 1),
                 "Finalizada"
         );
 
         Competition comp2 = this.buildCompetition(
-                "PL",
+                codePL,
                 LocalDate.of(2024, 8, 1),
                 "Em andamento"
         );
@@ -103,9 +122,9 @@ public class CompetitionRepositoryIT extends RepositoryTestBase {
 
         competitionRepository.save(comp1);
         competitionRepository.save(comp2);
-        
+
         Optional<Competition> result = competitionRepository.findByCodeAndStatus("PL");
-        
+
         assertTrue(result.isPresent());
         assertEquals("Em andamento", result.get().getStatus());
     }
@@ -113,9 +132,11 @@ public class CompetitionRepositoryIT extends RepositoryTestBase {
     @Test
     void findByCodeAndStatus_shouldReturnEmpty_whenNoActiveCompetitionExists(){
 
+        Code codePL = this.buildAndSaveCode("PL");
+
         competitionRepository.save(
                 this.buildCompetition(
-                        "PL",
+                        codePL,
                         LocalDate.of(2023, 8, 1),
                         "Finalizada"
                 )
@@ -137,9 +158,11 @@ public class CompetitionRepositoryIT extends RepositoryTestBase {
     // existsByExternalId
     @Test
     void existsByExternalId_shouldReturnTrue_whenExternalIdExists(){
+        Code codePL = this.buildAndSaveCode("PL");
+
         competitionRepository.save(
                 this.buildCompetition(
-                        "PL",
+                        codePL,
                         LocalDate.of(2024, 8, 1),
                         "Em andamento"
                 )

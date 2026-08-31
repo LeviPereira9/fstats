@@ -35,20 +35,20 @@ public class CompetitionServiceImplTest {
     void getCompetition_shouldReturnCompetitionResponse_whenCompetitionExists(){
         Competition competition = CompetitionTestFactory.buildCompetition("PL");
 
-        when(competitionRepository.findByCode("PL")).thenReturn(Optional.of(competition));
+        when(competitionRepository.findByCodeAndStatus("PL")).thenReturn(Optional.of(competition));
 
         CompetitionResponse response = competitionService.getCompetition("PL");
 
         assertNotNull(response);
-        assertEquals("PL", response.code());
-        assertEquals("Premier League", response.name());
+        assertEquals("PL", response.code().code());
+        assertEquals("Premier League", response.code().name());
 
-        verify(competitionRepository).findByCode("PL");
+        verify(competitionRepository).findByCodeAndStatus("PL");
     }
 
     @Test
     void getCompetition_shouldThrowNotFound_whenCompetitionDoesNotExist(){
-        when(competitionRepository.findByCode("XX")).thenReturn(Optional.empty());
+        when(competitionRepository.findByCodeAndStatus("XX")).thenReturn(Optional.empty());
 
         assertThrows(CustomNotFoundException.class,
                 ()-> competitionService.getCompetition("XX"));
@@ -65,7 +65,7 @@ public class CompetitionServiceImplTest {
         Competition result = competitionService.saveCompetition(competition);
 
         assertNotNull(result);
-        assertEquals("PL", result.getCode());
+        assertEquals("PL", result.getCode().getCode());
         verify(competitionRepository).save(competition);
     }
 

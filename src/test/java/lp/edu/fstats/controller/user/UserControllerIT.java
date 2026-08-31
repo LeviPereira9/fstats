@@ -136,7 +136,7 @@ public class UserControllerIT extends IntegrationTestBase {
                 .get("/user/search")
         .then()
                 .statusCode(200)
-                .body("content.size()", equalTo(2));
+                .body("data.content.size()", equalTo(2));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class UserControllerIT extends IntegrationTestBase {
                 .get("/user/search")
         .then()
                 .statusCode(200)
-                .body("content.size()", equalTo(0));
+                .body("data.content.size()", equalTo(0));
     }
 
     //=========================== updateUser ===========================
@@ -510,7 +510,7 @@ public class UserControllerIT extends IntegrationTestBase {
         .then()
                 .statusCode(403)
                 .body("operation", equalTo("Error.ForbiddenAction"))
-                .body("message", equalTo("Ação não permitida. Apenas o próprio usuário ou um moderador pode realizar esta operação."));
+                .body("message", equalTo("Ação não permitida. Você não possui permissão para alterar cargos superiores ao seu ou de usuários com cargo superior ao seu."));
     }
 
     @Test
@@ -531,7 +531,7 @@ public class UserControllerIT extends IntegrationTestBase {
         .then()
                 .statusCode(403)
                 .body("operation", equalTo("Error.ForbiddenAction"))
-                .body("message", equalTo("Ação não permitida. Apenas o próprio usuário ou um moderador pode realizar esta operação."));
+                .body("message", equalTo("Ação não permitida. Você não possui permissão para alterar cargos superiores ao seu ou de usuários com cargo superior ao seu."));
     }
 
     @Test

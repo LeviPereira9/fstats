@@ -93,7 +93,7 @@ public class AveragesServiceImplTest {
         assertEquals(BigDecimal.valueOf(1.5).multiply(BigDecimal.valueOf(100)), averageResponse.avgGoalsForHome());
         assertEquals(BigDecimal.valueOf(0.8).multiply(BigDecimal.valueOf(100)), averageResponse.avgGoalsAgainstHome());
         assertEquals(BigDecimal.valueOf(1.1).multiply(BigDecimal.valueOf(100)), averageResponse.avgGoalsForAway());
-        assertEquals(BigDecimal.valueOf(1.3).multiply(BigDecimal.valueOf(100)), averageResponse.avgGaolsAgainstAway());
+        assertEquals(BigDecimal.valueOf(1.3).multiply(BigDecimal.valueOf(100)), averageResponse.avgGoalsAgainstAway());
     }
 
     @Test

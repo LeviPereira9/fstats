@@ -1,10 +1,12 @@
 package lp.edu.fstats.repository;
 
 import lp.edu.fstats.base.RepositoryTestBase;
+import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.model.match.Match;
 import lp.edu.fstats.model.probability.Probability;
 import lp.edu.fstats.model.team.Team;
+import lp.edu.fstats.repository.code.CodeRepository;
 import lp.edu.fstats.repository.competition.CompetitionRepository;
 import lp.edu.fstats.repository.match.MatchRepository;
 import lp.edu.fstats.repository.probability.ProbabilityRepository;
@@ -36,19 +38,29 @@ public class ProbabilityRepositoryIT extends RepositoryTestBase {
     @Autowired
     private TeamRepository teamRepository;
 
+    @Autowired
+    private CodeRepository codeRepository;
+
     @BeforeEach
     void setUp(){
-        probabilityRepository.deleteAll();
-        matchRepository.deleteAll();
-        competitionRepository.deleteAll();
-        teamRepository.deleteAll();
+        probabilityRepository.deleteAllInBatch();
+        matchRepository.deleteAllInBatch();
+        competitionRepository.deleteAllInBatch();
+        teamRepository.deleteAllInBatch();
+        codeRepository.deleteAllInBatch();
     }
 
     private Competition buildCompetition(){
 
+        Code code = new Code();
+        code.setCode("PL");
+        code.setName("Premier League");
+        code = codeRepository.save(code);
+
         Competition competition = new Competition();
 
-        competition.setCode("PL");
+
+        competition.setCode(code);
         competition.setName("Premier League");
         competition.setType("LEAGUE");
         competition.setEmblem("emblem.png");

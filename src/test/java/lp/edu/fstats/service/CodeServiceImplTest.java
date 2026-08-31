@@ -8,14 +8,17 @@ import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.repository.code.CodeRepository;
 import lp.edu.fstats.service.code.CodeServiceImpl;
 
+import lp.edu.fstats.util.AuthUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -42,14 +45,21 @@ public class CodeServiceImplTest {
 
         when(codeRepository.findAll()).thenReturn(codes);
 
-        CodesResponse response = codeService.getAllCodes();
+        // Cria um mock estático para o AuthUtil apenas dentro deste bloco try
+        try (MockedStatic<AuthUtil> mockedAuthUtil = mockStatic(AuthUtil.class)) {
 
-        assertNotNull(response);
-        assertEquals(2, response.codes().size());
-        assertEquals("PL", response.codes().get(0).code());
-        assertEquals("BL1", response.codes().get(1).code());
+            // Simula que o usuário tem privilégios elevados
+            mockedAuthUtil.when(AuthUtil::hasElevatedPrivileges).thenReturn(true);
 
-        verify(codeRepository).findAll();
+            CodesResponse response = codeService.getAllCodes();
+
+            assertNotNull(response);
+            assertEquals(2, response.codes().size());
+            assertEquals("PL", response.codes().get(0).code());
+            assertEquals("BL1", response.codes().get(1).code());
+
+            verify(codeRepository).findAll();
+        }
     }
 
     // createCode
@@ -86,8 +96,15 @@ public class CodeServiceImplTest {
 
     @Test
     void deleteCode_shouldCallDeleteById_whenCodeExists (){
-        codeService.deleteCode(1);
+        Integer codeId = 1;
+        Code mockCode = CodeTestFactory.buildCode(codeId, "PL", "Premier League");
+        mockCode.setActive(true);
 
-        verify(codeRepository).deleteById(1);
+        when(codeRepository.findById(codeId)).thenReturn(Optional.of(mockCode));
+
+        codeService.deleteCode(codeId);
+
+        verify(codeRepository).save(mockCode);
+        verify(codeRepository, never()).deleteById(any());
     }
 }

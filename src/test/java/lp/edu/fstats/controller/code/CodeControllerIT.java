@@ -39,7 +39,7 @@ public class CodeControllerIT extends IntegrationTestBase {
         .then()
                 .statusCode(200)
                 .body("operation", equalTo("Code.GetAll"))
-                .body("message", equalTo("Competições ativas encontradas com sucesso."));
+                .body("message", equalTo("Codigo das competições ativas encontradas com sucesso."));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class CodeControllerIT extends IntegrationTestBase {
                 .get("/competition/code")
         .then()
                 .statusCode(200)
-                .body("message", equalTo("Competições ativas encontradas com sucesso."));
+                .body("message", equalTo("Codigo das competições ativas encontradas com sucesso."));
 
         given()
                 .cookie(authTestHelper.authCookie(user))
@@ -102,7 +102,7 @@ public class CodeControllerIT extends IntegrationTestBase {
                 .get("/competition/code")
         .then()
                 .statusCode(200)
-                .body("message", equalTo("Competições ativas encontradas com sucesso."));
+                .body("message", equalTo("Codigo das competições ativas encontradas com sucesso."));
 
         verify(codeRepositorySpy, times(1)).findAll();
     }

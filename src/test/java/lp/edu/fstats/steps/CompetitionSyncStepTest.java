@@ -7,6 +7,7 @@ import lp.edu.fstats.integration.dto.competition.CompetitionExternalResponse;
 import lp.edu.fstats.integration.dto.competition.CurrentSeasonExternalResponse;
 import lp.edu.fstats.integration.service.football.sync.context.CompetitionSyncContext;
 import lp.edu.fstats.integration.service.football.sync.step.CompetitionSyncStep;
+import lp.edu.fstats.model.code.Code;
 import lp.edu.fstats.model.competition.Competition;
 import lp.edu.fstats.repository.competition.CompetitionRepository;
 import lp.edu.fstats.service.competition.CompetitionService;
@@ -59,17 +60,20 @@ public class CompetitionSyncStepTest {
     void sync_shouldCreateNewCompetition_whenNoSavedCompetitionAndSeasonIsOngoing(){
         CompetitionExternalResponse externalResponse = FootballResponseFactory.buildExternalCompetitionResponse(200L, 5);
 
+        Code code = new Code();
+        code.setCode("PL");
+
         when(competitionRepository.findByCodeAndStatus("PL")).thenReturn(Optional.empty());
 
         when(footballApiClient.getCurrentCompetition("PL")).thenReturn(externalResponse);
 
         when(competitionRepository.existsByExternalId(200L)).thenReturn(false);
 
-        CompetitionSyncContext context = competitionSyncStep.sync("PL", Year.of(2024));
+        CompetitionSyncContext context = competitionSyncStep.sync(code, Year.of(2024));
 
         assertNotNull(context);
         assertNotNull(context.getCompetition());
-        assertEquals("PL", context.getCompetition().getCode());
+        assertEquals("PL", context.getCompetition().getCode().getCode());
         assertEquals(200L, context.getCompetition().getExternalId());
     }
 
@@ -78,13 +82,16 @@ public class CompetitionSyncStepTest {
     void sync_shouldReturnNullCompetition_whenNoSavedCompetitionAndSeasonIsFinished(){
         CompetitionExternalResponse externalResponse = FootballResponseFactory.buildExternalCompetitionResponse(200L, 38);
 
+        Code code = new Code();
+        code.setCode("PL");
+
         when(competitionRepository.findByCodeAndStatus("PL")).thenReturn(Optional.empty());
 
         when(footballApiClient.getCurrentCompetition("PL")).thenReturn(externalResponse);
 
         when(competitionRepository.existsByExternalId(200L)).thenReturn(true);
 
-        CompetitionSyncContext context = competitionSyncStep.sync("PL", Year.of(2024));
+        CompetitionSyncContext context = competitionSyncStep.sync(code, Year.of(2024));
 
         assertNotNull(context);
         assertNull(context.getCompetition());
@@ -103,7 +110,7 @@ public class CompetitionSyncStepTest {
 
         when(footballApiClient.getCurrentCompetition("PL")).thenReturn(externalResponse);
 
-        CompetitionSyncContext context = competitionSyncStep.sync("PL", Year.of(2024));
+        CompetitionSyncContext context = competitionSyncStep.sync(savedCompetition.getCode(), Year.of(2024));
 
         assertNotNull(context);
 

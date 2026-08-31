@@ -35,11 +35,11 @@ public class AutoControllerIT extends IntegrationTestBase {
         given()
                 .cookie(authTestHelper.authCookie(superAdmin))
         .when()
-                .post("/auto/PL")
+                .post("/auto/1")
         .then()
                 .statusCode(200);
 
-        verify(externalSyncOrchestrator).syncCompetition("PL");
+        verify(externalSyncOrchestrator).syncCompetition(1);
     }
 
     @Test

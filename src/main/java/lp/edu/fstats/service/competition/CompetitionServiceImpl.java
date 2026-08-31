@@ -18,7 +18,7 @@ public class CompetitionServiceImpl implements CompetitionService {
     @Cacheable(value = "competition", key = "'code:'+#code")
     @Override
     public CompetitionResponse getCompetition(String code) {
-        Competition competition = competitionRepository.findByCode(code)
+        Competition competition = competitionRepository.findByCodeAndStatus(code)
                 .orElseThrow(CustomNotFoundException::competition);
 
         return new CompetitionResponse(competition);
