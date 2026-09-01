@@ -5,6 +5,7 @@ import lp.edu.fstats.security.exception.AccessDeniedExceptionHandler;
 import lp.edu.fstats.security.exception.AuthenticationExceptionHandler;
 import lp.edu.fstats.security.jwt.JwtFilter;
 import lp.edu.fstats.util.AuthUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,6 +30,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
+    @Value("${front.allowed.origin}")
+    private String allowedOrigin;
 
     public static final String SECURITY = "bearerAuth";
     private final AuthenticationExceptionHandler authenticationExceptionHandler;
@@ -73,7 +76,8 @@ public class SecurityConfiguration {
 
         config.setAllowedOrigins(List.of(
                 //"https://arthurguerraa.github.io",
-                "http://localhost:5173"
+                /*"http://localhost:5173",*/
+                allowedOrigin
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
